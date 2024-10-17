@@ -5,10 +5,10 @@ id_pattern = re.compile(r'^.\d+$')
 
 class Config(object):
     # pyro client config
-    API_ID    = os.environ.get("API_ID", "22672907")  # ⚠️ Required
-    API_HASH  = os.environ.get("API_HASH", "0ff15ae2153bd8e03b48cb293010bc6a") # ⚠️ Required
-    BOT_TOKEN = os.environ.get("BOT_TOKEN", "7012772836:AAFBwKBA5S3s7ZmLTmWlMdf_U1NgC85z_vk") # ⚠️ Required
-    FORCE_SUB = os.environ.get('FORCE_SUB', '-1002056115205') # ⚠️ Required
+    API_ID    = os.environ.get("API_ID", "20071888")  # ⚠️ Required
+    API_HASH  = os.environ.get("API_HASH", "1c4cb9d94b23282abd9ae2a87a521b53") # ⚠️ Required
+    BOT_TOKEN = os.environ.get("BOT_TOKEN", "6613733493:AAHtEuKxjmllDjSL8xGFzgFaL3QYeezeYo0") # ⚠️ Required
+    FORCE_SUB = os.environ.get('FORCE_SUB', '-1002019186374') # ⚠️ Required
     AUTH_CHANNEL = int(FORCE_SUB) if FORCE_SUB and id_pattern.search(
     FORCE_SUB) else None
    
@@ -17,14 +17,14 @@ class Config(object):
     DB_NAME  = os.environ.get("DB_NAME","SnowEncoderBot") 
 
     # Other Configs 
-    ADMIN = int(os.environ.get("ADMIN", "6287591671")) # ⚠️ Required
-    LOG_CHANNEL = int(os.environ.get('LOG_CHANNEL', '-1002022119783')) # ⚠️ Required
+    ADMIN = int(os.environ.get("ADMIN", "6768137528")) # ⚠️ Required
+    LOG_CHANNEL = int(os.environ.get('LOG_CHANNEL', '-1002205743743')) # ⚠️ Required
     BOT_UPTIME = BOT_UPTIME  = time.time()
     START_PIC = os.environ.get("START_PIC", "https://graph.org/file/15e82d7e665eccc8bd9c5.jpg")
 
     # wes response configuration     
     WEBHOOK = bool(os.environ.get("WEBHOOK", True))
-    PORT = int(os.environ.get("PORT", "8080"))
+    PORT = int(os.environ.get("PORT", "3730"))
 
 
     caption = """
