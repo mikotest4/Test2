@@ -109,7 +109,14 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
     elif data == '480pc':
         try:
             c_thumb = await db.get_thumbnail(query.from_user.id)
-            ffmpeg = "-preset veryfast -c:v libx264 -s 840x480 -x265-params 'bframes=8:psy-rd=1:ref=3:aq-mode=3:aq-strength=0.8:deblock=1,1' -pix_fmt yuv420p -crf 30 -c:a libopus -b:a 32k -c:s copy -map 0 -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 5"
+            
+            # Get user's custom settings
+            settings = await db.get_encoding_settings(query.from_user.id)
+            crf = settings['crf_480p']
+            vcodec = settings['vcodec']
+            preset = settings['preset']
+            
+            ffmpeg = f"-preset {preset} -c:v {vcodec} -s 840x480 -crf {crf} -pix_fmt yuv420p -c:a libopus -b:a 32k -c:s copy -map 0 -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 5"
             await CompressVideo(bot=bot, query=query, ffmpegcode=ffmpeg, c_thumb=c_thumb)
 
         except Exception as e:
@@ -118,7 +125,14 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
     elif data == '720pc':
         try:
             c_thumb = await db.get_thumbnail(query.from_user.id)
-            ffmpeg = "-preset veryfast -c:v libx264 -s 1280x720 -x265-params 'bframes=8:psy-rd=1:ref=3:aq-mode=3:aq-strength=0.8:deblock=1,1' -pix_fmt yuv420p -crf 30 -c:a libopus -b:a 32k -c:s copy -map 0 -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 5"
+            
+            # Get user's custom settings
+            settings = await db.get_encoding_settings(query.from_user.id)
+            crf = settings['crf_720p']
+            vcodec = settings['vcodec']
+            preset = settings['preset']
+            
+            ffmpeg = f"-preset {preset} -c:v {vcodec} -s 1280x720 -crf {crf} -pix_fmt yuv420p -c:a libopus -b:a 32k -c:s copy -map 0 -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 5"
             await CompressVideo(bot=bot, query=query, ffmpegcode=ffmpeg, c_thumb=c_thumb)
 
         except Exception as e:
@@ -128,7 +142,14 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
 
         try:
             c_thumb = await db.get_thumbnail(query.from_user.id)
-            ffmpeg = "-preset veryfast -c:v libx264 -s 1920x1080 -x265-params 'bframes=8:psy-rd=1:ref=3:aq-mode=3:aq-strength=0.8:deblock=1,1' -pix_fmt yuv420p -crf 30 -c:a libopus -b:a 32k -c:s copy -map 0 -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 5"
+            
+            # Get user's custom settings
+            settings = await db.get_encoding_settings(query.from_user.id)
+            crf = settings['crf_1080p']
+            vcodec = settings['vcodec']
+            preset = settings['preset']
+            
+            ffmpeg = f"-preset {preset} -c:v {vcodec} -s 1920x1080 -crf {crf} -pix_fmt yuv420p -c:a libopus -b:a 32k -c:s copy -map 0 -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 5"
             await CompressVideo(bot=bot, query=query, ffmpegcode=ffmpeg, c_thumb=c_thumb)
 
         except Exception as e:
@@ -138,7 +159,14 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
 
         try:
             c_thumb = await db.get_thumbnail(query.from_user.id)
-            ffmpeg = "-preset veryfast -c:v libx264 -s 3840x2160 -x265-params 'bframes=8:psy-rd=1:ref=3:aq-mode=3:aq-strength=0.8:deblock=1,1' -pix_fmt yuv420p -crf 30 -c:a libopus -b:a 32k -c:s copy -map 0 -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 5"
+            
+            # Get user's custom settings
+            settings = await db.get_encoding_settings(query.from_user.id)
+            crf = settings['crf_4k']
+            vcodec = settings['vcodec']
+            preset = settings['preset']
+            
+            ffmpeg = f"-preset {preset} -c:v {vcodec} -s 3840x2160 -crf {crf} -pix_fmt yuv420p -c:a libopus -b:a 32k -c:s copy -map 0 -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 5"
             await CompressVideo(bot=bot, query=query, ffmpegcode=ffmpeg, c_thumb=c_thumb)
 
         except Exception as e:
