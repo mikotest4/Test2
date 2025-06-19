@@ -41,7 +41,7 @@ async def Handle_StartMsg(bot: Client, msg: Message):
             return await msg.reply_text(
                 f"✅ **Verification Successful!**\n\n"
                 f"Your token has been verified and is valid for **{get_exp_time(Config.VERIFY_EXPIRE)}**.\n\n"
-                f"🎬 You can now send video files to encode them!",
+                f"🎬 You can now send video files to encode them in groups!",
                 quote=True
             )
         except Exception as e:
@@ -60,16 +60,21 @@ async def Handle_StartMsg(bot: Client, msg: Message):
     else:
         # Check if user is premium and show premium indicator
         is_premium = await db.is_premium_user(user_id)
-        premium_text = "👑 **PREMIUM USER**" if is_premium else ""
+        is_admin = user_id == Config.ADMIN
+        
+        if is_admin:
+            status_text = "👨‍💼 **ADMIN USER** - Full Access Everywhere"
+        elif is_premium:
+            status_text = "👑 **PREMIUM USER** - Group Encoding Access"
+        else:
+            status_text = "👤 **REGULAR USER** - Group Encoding Only"
         
         btn = [
             [InlineKeyboardButton(text='❗ Hᴇʟᴘ', callback_data='help'), InlineKeyboardButton(text='🌨️ Aʙᴏᴜᴛ', callback_data='about')],
             [InlineKeyboardButton(text='📢 Uᴘᴅᴀᴛᴇs', url='https://t.me/+6LwHBLWZc3IyMTU1'), InlineKeyboardButton(text='💻 Dᴇᴠᴇʟᴏᴘᴇʀ', url='https://t.me/+6LwHBLWZc3IyMTU1')]
         ]
 
-        start_text = Txt.PRIVATE_START_MSG.format(msg.from_user.mention)
-        if premium_text:
-            start_text = f"{premium_text}\n\n{start_text}"
+        start_text = f"{status_text}\n\n{Txt.PRIVATE_START_MSG.format(msg.from_user.mention)}"
 
         if Config.START_PIC:
             await Snowdev.delete()
@@ -81,8 +86,31 @@ async def Handle_StartMsg(bot: Client, msg: Message):
 @Client.on_message((filters.private | filters.group) & (filters.document | filters.audio | filters.video))
 async def Files_Option(bot: Client, message: Message):
     user_id = message.from_user.id
+    chat_type = message.chat.type
     
     SnowDev = await message.reply_text(text='**Please Wait**', reply_to_message_id=message.id)
+
+    # Check if user is admin
+    is_admin = user_id == Config.ADMIN
+    is_premium = await db.is_premium_user(user_id)
+    is_in_group = chat_type in [enums.ChatType.SUPERGROUP, enums.ChatType.GROUP]
+
+    # New restriction logic - Only admin can encode in DM
+    if not is_admin and not is_in_group:
+        access_level = "👑 Premium User" if is_premium else "👤 Regular User"
+        
+        return await SnowDev.edit(
+            f"🚫 **DM Encoding Restricted**\n\n"
+            f"**Your Access Level:** {access_level}\n"
+            f"**Current Location:** 📱 Private Chat\n\n"
+            f"**Only Admin can encode in DM.**\n"
+            f"**All other users must use groups for encoding.**\n\n"
+            f"**How to encode:**\n"
+            f"• Add me to a group\n"
+            f"• Give me admin permissions\n"
+            f"• Send your file in the group\n\n"
+            f"**Want DM access?** Only available for Bot Admin."
+        )
 
     if message.chat.type == enums.ChatType.SUPERGROUP and not await db.is_user_exist(message.from_user.id):
         botusername = await bot.get_me()
@@ -92,11 +120,8 @@ async def Files_Option(bot: Client, message: Message):
         ]
         return await SnowDev.edit(text=Txt.GROUP_START_MSG.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
 
-    # Check if user is premium first
-    is_premium = await db.is_premium_user(user_id)
-    
-    # If user is not admin and not premium, check verification
-    if user_id != Config.ADMIN and not is_premium:
+    # Verification check for non-admin users (premium users also need verification in groups)
+    if not is_admin:
         if not await is_user_verified(user_id, db):
             try:
                 botusername = (await bot.get_me()).username
@@ -110,7 +135,7 @@ async def Files_Option(bot: Client, message: Message):
                 return await SnowDev.edit(
                     text=(
                         f"🔒 **Verification Required**\n\n"
-                        f"You need to verify yourself before encoding videos.\n\n"
+                        f"You need to verify yourself before encoding videos in groups.\n\n"
                         f"⏱️ **Token Validity:** {get_exp_time(Config.VERIFY_EXPIRE)}\n\n"
                         f"**How to verify:**\n"
                         f"1. Click '🔗 ᴠᴇʀɪғʏ ɴᴏᴡ' button\n"
@@ -118,7 +143,7 @@ async def Files_Option(bot: Client, message: Message):
                         f"3. Return to bot and send /start\n"
                         f"4. Send your file again\n\n"
                         f"**Note:** This helps support the bot through ads.\n\n"
-                        f"💡 **Want to skip verification?** Contact admin for premium access!"
+                        f"💡 **Premium users also need verification for group usage.**"
                     ),
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
@@ -130,120 +155,23 @@ async def Files_Option(bot: Client, message: Message):
     filename = file.file_name
     filesize = humanize.naturalsize(file.file_size)
     
-    # Add premium indicator to file options
-    premium_indicator = "👑 **PREMIUM USER** - No verification needed!\n\n" if is_premium else ""
-
-    try:
-        text = f"""{premium_indicator}**__What do you want me to do with this file.?__**\n\n**File Name** :- `{filename}`\n\n**File Size** :- `{filesize}`"""
-
-        buttons = [
-            [InlineKeyboardButton("Rᴇɴᴀᴍᴇ 📝", callback_data=f"rename-{message.from_user.id}")],
-            [InlineKeyboardButton("Cᴏᴍᴘʀᴇss 🗜️", callback_data=f"compress-{message.from_user.id}")]
-        ]
-        await SnowDev.edit(text=text, reply_markup=InlineKeyboardMarkup(buttons))
+    # Enhanced access level display
+    if is_admin:
+        access_level = "👨‍💼 Admin (Full Access)"
+    elif is_premium:
+        access_level = "👑 Premium (Group Access)"
+    else:
+        access_level = "👤 Regular (Group Access)"
         
-    except FloodWait as e:
-        floodmsg = await message.reply_text(f"**😥 Pʟᴇᴀsᴇ Wᴀɪᴛ ᴅᴏɴ'ᴛ ᴅᴏ ғʟᴏᴏᴅɪɴɢ ᴡᴀɪᴛ ғᴏʀ {e.value} Sᴇᴄᴄᴏɴᴅs**", reply_to_message_id=message.id)
-        await sleep(e.value)
-        await floodmsg.delete()
-
-        text = f"""{premium_indicator}**__What do you want me to do with this file.?__**\n\n**File Name** :- `{filename}`\n\n**File Size** :- `{filesize}`"""
-        buttons = [
-            [InlineKeyboardButton("Rᴇɴᴀᴍᴇ 📝", callback_data=f"rename-{message.from_user.id}")],
-            [InlineKeyboardButton("Cᴏᴍᴘʀᴇss 🗜️", callback_data=f"compress-{message.from_user.id}")]
-        ]
-        await SnowDev.edit(text=text, reply_markup=InlineKeyboardMarkup(buttons))
+    location = "💬 Group Chat" if is_in_group else "📱 Private Chat"
+    
+    try:
+        file_info = f"**📁 File Information**\n\n**File Name:** `{filename}`\n**File Size:** `{filesize}`\n\n**👤 Access Level:** {access_level}\n**📍 Location:** {location}"
+        
+        btn = [[InlineKeyboardButton("📂 What do you want to do with this file?", callback_data="option")]]
+        
+        await SnowDev.edit(text=file_info, reply_markup=InlineKeyboardMarkup(btn))
 
     except Exception as e:
-        print(e)
-
-@Client.on_message((filters.private | filters.group) & filters.command('cancel'))
-async def cancel_process(bot: Client, message: Message):
-    try:
-        shutil.rmtree(f"encode/{message.from_user.id}")
-        shutil.rmtree(f"ffmpeg/{message.from_user.id}")
-        shutil.rmtree(f"Renames/{message.from_user.id}")
-        shutil.rmtree(f"Metadata/{message.from_user.id}")
-        shutil.rmtree(f"Screenshot_Generation/{message.from_user.id}")
-        
-        return await message.reply_text(text="**Canceled All On Going Processes ✅**")
-    except BaseException:
-        pass
-
-# Add premium status command
-@Client.on_message(filters.command('premium_status') & filters.private)
-async def check_premium_status(bot: Client, message: Message):
-    user_id = message.from_user.id
-    premium_status = await db.get_premium_status(user_id)
-    
-    if premium_status['is_premium']:
-        expiry_time = datetime.datetime.fromtimestamp(premium_status['premium_expires'])
-        current_time = datetime.datetime.now()
-        time_left = expiry_time - current_time
-        
-        days = time_left.days
-        hours, remainder = divmod(time_left.seconds, 3600)
-        minutes, _ = divmod(remainder, 60)
-        
-        if days > 0:
-            remaining_text = f"{days} days, {hours} hours"
-        elif hours > 0:
-            remaining_text = f"{hours} hours, {minutes} minutes"
-        else:
-            remaining_text = f"{minutes} minutes"
-        
-        await message.reply_text(
-            f"👑 **Premium Status: Active**\n\n"
-            f"⏱️ **Time Remaining:** {remaining_text}\n"
-            f"**Expires:** {expiry_time.strftime('%Y-%m-%d %I:%M:%S %p')}\n\n"
-            f"🎬 You can encode videos without verification!",
-            quote=True
-        )
-    else:
-        await message.reply_text(
-            f"❌ **Premium Status: Inactive**\n\n"
-            f"You don't have premium access.\n"
-            f"Contact admin to get premium access and skip verification!",
-            quote=True
-        )
-
-# Add verification status command
-@Client.on_message(filters.command('verify_status') & filters.private)
-async def check_verify_status(bot: Client, message: Message):
-    user_id = message.from_user.id
-    
-    # Check premium first
-    is_premium = await db.is_premium_user(user_id)
-    if is_premium:
-        await message.reply_text(
-            f"👑 **You have Premium Access!**\n\n"
-            f"No verification needed. You can encode files directly.",
-            quote=True
-        )
-        return
-    
-    verify_status = await db.get_verify_status(user_id)
-    
-    if verify_status['is_verified']:
-        verified_time = verify_status.get('verified_time', 0)
-        remaining_time = Config.VERIFY_EXPIRE - (time.time() - verified_time)
-        
-        if remaining_time > 0:
-            await message.reply_text(
-                f"✅ **Verification Status: Active**\n\n"
-                f"⏱️ **Time Remaining:** {get_exp_time(int(remaining_time))}\n\n"
-                f"🎬 You can encode videos without restrictions.",
-                quote=True
-            )
-        else:
-            await message.reply_text(
-                f"❌ **Verification Status: Expired**\n\n"
-                f"Send a file to get a new verification link.",
-                quote=True
-            )
-    else:
-        await message.reply_text(
-            f"❌ **Verification Status: Not Verified**\n\n"
-            f"Send a file to get verification link.",
-            quote=True
-        )
+        print(f"Error in Files_Option: {e}")
+        await SnowDev.edit("❌ An error occurred while processing your file.")
