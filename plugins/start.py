@@ -2,6 +2,7 @@ import asyncio
 import shutil
 import humanize
 import time
+import datetime
 from time import sleep
 from config import Config
 from script import Txt
@@ -58,18 +59,26 @@ async def Handle_StartMsg(bot: Client, msg: Message):
         ]
         await Snowdev.edit(text=Txt.GROUP_START_MSG.format(msg.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
     else:
+        # Check if user is premium and show premium indicator
+        is_premium = await db.is_premium_user(user_id)
+        premium_text = "👑 **PREMIUM USER**" if is_premium else ""
+        
         btn = [
             [InlineKeyboardButton(text='❗ Hᴇʟᴘ', callback_data='help'), InlineKeyboardButton(text='🌨️ Aʙᴏᴜᴛ', callback_data='about')],
             [InlineKeyboardButton('💝 movies ', url='https://t.me/aapna_Movies')],
             [InlineKeyboardButton(text='📢 Uᴘᴅᴀᴛᴇs', url='https://t.me/+6LwHBLWZc3IyMTU1'), InlineKeyboardButton(text='💻 Dᴇᴠᴇʟᴏᴘᴇʀ', url='https://t.me/+6LwHBLWZc3IyMTU1')]
         ]
 
+        start_text = Txt.PRIVATE_START_MSG.format(msg.from_user.mention)
+        if premium_text:
+            start_text = f"{premium_text}\n\n{start_text}"
+
         if Config.START_PIC:
             await Snowdev.delete()
-            await msg.reply_photo(photo=Config.START_PIC, caption=Txt.PRIVATE_START_MSG.format(msg.from_user.mention), reply_markup=InlineKeyboardMarkup(btn), reply_to_message_id=msg.id)
+            await msg.reply_photo(photo=Config.START_PIC, caption=start_text, reply_markup=InlineKeyboardMarkup(btn), reply_to_message_id=msg.id)
         else:
             await Snowdev.delete()
-            await msg.reply_text(text=Txt.PRIVATE_START_MSG.format(msg.from_user.mention), reply_markup=InlineKeyboardMarkup(btn), reply_to_message_id=msg.id)
+            await msg.reply_text(text=start_text, reply_markup=InlineKeyboardMarkup(btn), reply_to_message_id=msg.id)
 
 @Client.on_message((filters.private | filters.group) & (filters.document | filters.audio | filters.video))
 async def Files_Option(bot: Client, message: Message):
@@ -86,9 +95,11 @@ async def Files_Option(bot: Client, message: Message):
         ]
         return await SnowDev.edit(text=Txt.GROUP_START_MSG.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
 
-    # Check if user is admin (skip verification for admins)
-    if user_id != Config.ADMIN:
-        # Check verification status
+    # Check if user is premium first
+    is_premium = await db.is_premium_user(user_id)
+    
+    # If user is not admin and not premium, check verification
+    if user_id != Config.ADMIN and not is_premium:
         if not await is_user_verified(user_id, db):
             try:
                 botusername = (await bot.get_me()).username
@@ -109,7 +120,8 @@ async def Files_Option(bot: Client, message: Message):
                         f"2. Complete the verification process\n"
                         f"3. Return to bot and send /start\n"
                         f"4. Send your file again\n\n"
-                        f"**Note:** This helps support the bot through ads."
+                        f"**Note:** This helps support the bot through ads.\n\n"
+                        f"💡 **Want to skip verification?** Contact admin for premium access!"
                     ),
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
@@ -120,9 +132,12 @@ async def Files_Option(bot: Client, message: Message):
     file = getattr(message, message.media.value)
     filename = file.file_name
     filesize = humanize.naturalsize(file.file_size)
+    
+    # Add premium indicator to file options
+    premium_indicator = "👑 **PREMIUM USER** - No verification needed!\n\n" if is_premium else ""
 
     try:
-        text = f"""**__What do you want me to do with this file.?__**\n\n**File Name** :- `{filename}`\n\n**File Size** :- `{filesize}`"""
+        text = f"""{premium_indicator}**__What do you want me to do with this file.?__**\n\n**File Name** :- `{filename}`\n\n**File Size** :- `{filesize}`"""
 
         buttons = [
             [InlineKeyboardButton("Rᴇɴᴀᴍᴇ 📝", callback_data=f"rename-{message.from_user.id}")],
@@ -136,7 +151,7 @@ async def Files_Option(bot: Client, message: Message):
         await sleep(e.value)
         await floodmsg.delete()
 
-        text = f"""**__What do you want me to do with this file.?__**\n\n**File Name** :- `{filename}`\n\n**File Size** :- `{filesize}`"""
+        text = f"""{premium_indicator}**__What do you want me to do with this file.?__**\n\n**File Name** :- `{filename}`\n\n**File Size** :- `{filesize}`"""
         buttons = [
             [InlineKeyboardButton("Rᴇɴᴀᴍᴇ 📝", callback_data=f"rename-{message.from_user.id}")],
             [InlineKeyboardButton('💝 movies ', url='https://t.me/aapna_Movies')],
@@ -160,10 +175,58 @@ async def cancel_process(bot: Client, message: Message):
     except BaseException:
         pass
 
+# Add premium status command
+@Client.on_message(filters.command('premium_status') & filters.private)
+async def check_premium_status(bot: Client, message: Message):
+    user_id = message.from_user.id
+    premium_status = await db.get_premium_status(user_id)
+    
+    if premium_status['is_premium']:
+        expiry_time = datetime.datetime.fromtimestamp(premium_status['premium_expires'])
+        current_time = datetime.datetime.now()
+        time_left = expiry_time - current_time
+        
+        days = time_left.days
+        hours, remainder = divmod(time_left.seconds, 3600)
+        minutes, _ = divmod(remainder, 60)
+        
+        if days > 0:
+            remaining_text = f"{days} days, {hours} hours"
+        elif hours > 0:
+            remaining_text = f"{hours} hours, {minutes} minutes"
+        else:
+            remaining_text = f"{minutes} minutes"
+        
+        await message.reply_text(
+            f"👑 **Premium Status: Active**\n\n"
+            f"⏱️ **Time Remaining:** {remaining_text}\n"
+            f"**Expires:** {expiry_time.strftime('%Y-%m-%d %I:%M:%S %p')}\n\n"
+            f"🎬 You can encode videos without verification!",
+            quote=True
+        )
+    else:
+        await message.reply_text(
+            f"❌ **Premium Status: Inactive**\n\n"
+            f"You don't have premium access.\n"
+            f"Contact admin to get premium access and skip verification!",
+            quote=True
+        )
+
 # Add verification status command
 @Client.on_message(filters.command('verify_status') & filters.private)
 async def check_verify_status(bot: Client, message: Message):
     user_id = message.from_user.id
+    
+    # Check premium first
+    is_premium = await db.is_premium_user(user_id)
+    if is_premium:
+        await message.reply_text(
+            f"👑 **You have Premium Access!**\n\n"
+            f"No verification needed. You can encode files directly.",
+            quote=True
+        )
+        return
+    
     verify_status = await db.get_verify_status(user_id)
     
     if verify_status['is_verified']:
@@ -180,12 +243,12 @@ async def check_verify_status(bot: Client, message: Message):
         else:
             await message.reply_text(
                 f"❌ **Verification Status: Expired**\n\n"
-                f"Please send a file to get a new verification link.",
+                f"Send a file to get a new verification link.",
                 quote=True
             )
     else:
         await message.reply_text(
             f"❌ **Verification Status: Not Verified**\n\n"
-            f"Please send a file to get a verification link.",
+            f"Send a file to get verification link.",
             quote=True
         )
