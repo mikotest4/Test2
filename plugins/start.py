@@ -65,9 +65,9 @@ async def Handle_StartMsg(bot: Client, msg: Message):
         if is_admin:
             status_text = "👨‍💼 **ADMIN USER** - Full Access Everywhere"
         elif is_premium:
-            status_text = "👑 **PREMIUM USER** - Group Encoding Access"
+            status_text = "👑 **PREMIUM USER** - Group Access (No Verification)"
         else:
-            status_text = "👤 **REGULAR USER** - Group Encoding Only"
+            status_text = "👤 **REGULAR USER** - Group Access (Verification Required)"
         
         btn = [
             [InlineKeyboardButton(text='❗ Hᴇʟᴘ', callback_data='help'), InlineKeyboardButton(text='🌨️ Aʙᴏᴜᴛ', callback_data='about')],
@@ -120,8 +120,8 @@ async def Files_Option(bot: Client, message: Message):
         ]
         return await SnowDev.edit(text=Txt.GROUP_START_MSG.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
 
-    # Verification check for non-admin users (premium users also need verification in groups)
-    if not is_admin:
+    # Verification check - Admin bypass, Premium bypass, Regular users need verification
+    if not is_admin and not is_premium:
         if not await is_user_verified(user_id, db):
             try:
                 botusername = (await bot.get_me()).username
@@ -143,7 +143,7 @@ async def Files_Option(bot: Client, message: Message):
                         f"3. Return to bot and send /start\n"
                         f"4. Send your file again\n\n"
                         f"**Note:** This helps support the bot through ads.\n\n"
-                        f"💡 **Premium users also need verification for group usage.**"
+                        f"💡 **Get premium to skip verification!**"
                     ),
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
@@ -159,9 +159,9 @@ async def Files_Option(bot: Client, message: Message):
     if is_admin:
         access_level = "👨‍💼 Admin (Full Access)"
     elif is_premium:
-        access_level = "👑 Premium (Group Access)"
+        access_level = "👑 Premium (No Verification)"
     else:
-        access_level = "👤 Regular (Group Access)"
+        access_level = "👤 Regular (Verification Required)"
         
     location = "💬 Group Chat" if is_in_group else "📱 Private Chat"
     
