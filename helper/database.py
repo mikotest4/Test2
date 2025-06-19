@@ -46,6 +46,23 @@ class Database:
             )
         )
 
+    async def check_and_remove_expired_premium(self):
+        """Check and remove expired premium users automatically"""
+        current_time = datetime.datetime.now().timestamp()
+        
+        # Find all premium users whose premium has expired
+        expired_users = await self.col.find({
+            'premium_status.is_premium': True,
+            'premium_status.premium_expires': {'$lt': current_time}
+        }).to_list(length=None)
+        
+        # Remove premium status from expired users
+        for user in expired_users:
+            await self.remove_premium_user(user['id'])
+            print(f"Removed expired premium from user: {user['id']}")
+        
+        return len(expired_users)
+
     # PREMIUM USER METHODS
     async def add_premium_user(self, user_id, duration_seconds, added_by):
         """Add premium access to user"""
@@ -171,61 +188,64 @@ class Database:
     async def set_caption(self, user_id, caption):
         await self.col.update_one({'id': int(user_id)}, {'$set': {'caption': caption}})
 
-    async def get_caption(self, id):
-        user = await self.col.find_one({'id': int(id)})
-        return user.get('caption', None)
-    
+    async def get_caption(self, user_id):
+        user = await self.col.find_one({'id': int(user_id)})
+        if user:
+            return user.get('caption')
+        return None
+
     async def set_thumbnail(self, user_id, thumbnail):
         await self.col.update_one({'id': int(user_id)}, {'$set': {'thumbnail': thumbnail}})
 
-    async def get_thumbnail(self, id):
-        user = await self.col.find_one({'id': int(id)})
-        return user.get('thumbnail', None)
-    
+    async def get_thumbnail(self, user_id):
+        user = await self.col.find_one({'id': int(user_id)})
+        if user:
+            return user.get('thumbnail')
+        return None
+
     async def set_ffmpegcode(self, user_id, ffmpegcode):
         await self.col.update_one({'id': int(user_id)}, {'$set': {'ffmpegcode': ffmpegcode}})
 
-    async def get_ffmpegcode(self, id):
-        user = await self.col.find_one({'id': int(id)})
-        return user.get('ffmpegcode', None)
-    
+    async def get_ffmpegcode(self, user_id):
+        user = await self.col.find_one({'id': int(user_id)})
+        if user:
+            return user.get('ffmpegcode')
+        return None
+
     async def set_metadata(self, user_id, metadata):
         await self.col.update_one({'id': int(user_id)}, {'$set': {'metadata': metadata}})
 
-    async def get_metadata(self, id):
-        user = await self.col.find_one({'id': int(id)})
-        return user.get('metadata', None)
+    async def get_metadata(self, user_id):
+        user = await self.col.find_one({'id': int(user_id)})
+        if user:
+            return user.get('metadata')
+        return """ -map 0 -c:s copy -c:a copy -c:v copy -metadata title="Powered By:- @Kdramaland" -metadata author="@Snowball_Official" -metadata:s:s title="Subtitled By :- @Kdramaland" -metadata:s:a title="By :- @Kdramaland" -metadata:s:v title="By:- @Snowball_Official" """
 
-    async def add_user(self, b, m):
-        u = m.from_user
-        if not await self.is_user_exist(u.id):
-            user = self.new_user(u.id)
+    async def add_user(self, bot, message):
+        user_id = message.from_user.id
+        if not await self.is_user_exist(user_id):
+            user = self.new_user(user_id)
             await self.col.insert_one(user)
-            await send_log(b, u)
+            await send_log(bot, message.from_user)
 
-    async def is_user_exist(self, id):
-        user = await self.col.find_one({'id': int(id)})
-        return bool(user)
+    async def is_user_exist(self, user_id):
+        user = await self.col.find_one({'id': int(user_id)})
+        if user:
+            return True
+        return False
 
     async def total_users_count(self):
         count = await self.col.count_documents({})
         return count
 
-    async def get_all_users(self):
-        all_users = self.col.find({})
-        return all_users
-
-    async def delete_user(self, user_id):
-        await self.col.delete_many({'id': int(user_id)})
-
-    async def remove_ban(self, id):
+    async def remove_ban(self, user_id):
         ban_status = dict(
             is_banned=False,
             ban_duration=0,
             banned_on=datetime.date.max.isoformat(),
             ban_reason=''
         )
-        await self.col.update_one({'id': id}, {'$set': {'ban_status': ban_status}})
+        await self.col.update_one({'id': int(user_id)}, {'$set': {'ban_status': ban_status}})
 
     async def ban_user(self, user_id, ban_duration, ban_reason):
         ban_status = dict(
@@ -234,20 +254,27 @@ class Database:
             banned_on=datetime.date.today().isoformat(),
             ban_reason=ban_reason
         )
-        await self.col.update_one({'id': user_id}, {'$set': {'ban_status': ban_status}})
+        await self.col.update_one({'id': int(user_id)}, {'$set': {'ban_status': ban_status}})
 
-    async def get_ban_status(self, id):
+    async def get_ban_status(self, user_id):
         default = dict(
             is_banned=False,
             ban_duration=0,
             banned_on=datetime.date.max.isoformat(),
             ban_reason=''
         )
-        user = await self.col.find_one({'id': int(id)})
-        return user.get('ban_status', default)
+        user = await self.col.find_one({})
+        if user:
+            return user.get('ban_status', default)
+        return default
 
     async def get_all_banned_users(self):
         banned_users = self.col.find({'ban_status.is_banned': True})
         return banned_users
+
+    async def get_all_users(self):
+        all_users = self.col.find({})
+        return all_users
+
 
 db = Database(Config.DB_URL, Config.DB_NAME)
