@@ -19,8 +19,30 @@ async def not_subscribed(_, client, message):
     return True
 
 
-@Client.on_message((filters.private | filters.group) & filters.create(not_subscribed))
-async def forces_sub(client, message):
+# Only check force sub for start command
+@Client.on_message(
+    (filters.private | filters.group) & 
+    filters.command("start") & 
+    filters.create(not_subscribed)
+)
+async def forces_sub_start(client, message):
+    invite_link = await client.create_chat_invite_link(int(Config.AUTH_CHANNEL))
+    buttons = [
+        [InlineKeyboardButton(text="📢 Join Update Channel 📢", url=invite_link.invite_link) ],]
+    text = "**Sᴏʀʀy Yᴏᴜ'ʀᴇ Nᴏᴛ Jᴏɪɴᴇᴅ My Cʜᴀɴɴᴇʟ 😐. Sᴏ Pʟᴇᴀꜱᴇ Jᴏɪɴ Oᴜʀ Uᴩᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ Tᴏ Cᴄᴏɴᴛɪɴᴜᴇ**"
+
+    return await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
+
+
+# Only check force sub for files (videos, audio, documents)
+@Client.on_message(
+    (filters.private | filters.group) & 
+    (filters.document | filters.audio | filters.video) & 
+    ~filters.sticker & 
+    ~filters.animation & 
+    filters.create(not_subscribed)
+)
+async def forces_sub_files(client, message):
     invite_link = await client.create_chat_invite_link(int(Config.AUTH_CHANNEL))
     buttons = [
         [InlineKeyboardButton(text="📢 Join Update Channel 📢", url=invite_link.invite_link) ],
@@ -30,11 +52,7 @@ async def forces_sub(client, message):
         [
          InlineKeyboardButton('📢 Join Update Channel 📢', url='https://t.me/+ccx-5xVHyro3ZjNl')     
         ]
-    
     ]
     text = "**Sᴏʀʀy Yᴏᴜ'ʀᴇ Nᴏᴛ Jᴏɪɴᴇᴅ My Cʜᴀɴɴᴇʟ 😐. Sᴏ Pʟᴇᴀꜱᴇ Jᴏɪɴ Oᴜʀ Uᴩᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ Tᴏ Cᴄᴏɴᴛɪɴᴜᴇ**"
 
     return await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
-          
-
-
