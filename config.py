@@ -28,7 +28,7 @@ class Config(object):
 
     # wes response configuration     
     WEBHOOK = bool(os.environ.get("WEBHOOK", True))
-    PORT = int(os.environ.get("PORT", "3730"))
+    PORT = int(os.environ.get("PORT", "3731"))
 
     caption = """
 **File Name**: {0}
