@@ -49,8 +49,12 @@ Send me the correct ffmpeg code for more info.
 
     
     HELP_MSG = """
-Available commands:-
+**Available commands:**
 
+**🎬 File Processing:**
+➜ Send any video/audio/document to process
+
+**⚙️ Settings:**
 ➜ /set_ffmpeg - To set custom ffmpeg code
 ➜ /set_metadata - To set custom metadata code
 ➜ /set_caption - To set custom caption
@@ -61,6 +65,18 @@ Available commands:-
 ➜ /see_caption - View caption 
 ➜ To Set Thumbnail just send photo
 
+**📊 Status:**
+➜ /premium_status - Check your premium status
+➜ /verify_status - Check your verification status
+
+**🔧 Other:**
+➜ /cancel - Cancel ongoing processes
+
+**👑 Premium Benefits:**
+• No verification required
+• Direct file encoding
+• Priority processing
+• Skip ads and waiting
 
 <b>⦿ Developer:</b> <a href=https://t.me/+6LwHBLWZc3IyMTU1>꧁༺ 𝓣𝓔𝓒𝓗_𝓗𝓔𝓡𝓞 ༻꧂ ❄️</a>
 """
@@ -74,4 +90,13 @@ Available commands:-
 ├✏️ Lᴀɴɢᴜᴀɢᴇ: <a href=https://www.python.org>Pyᴛʜᴏɴ 3</a>
 ├💾 Dᴀᴛᴀ Bᴀꜱᴇ: <a href=https://cloud.mongodb.com>Mᴏɴɢᴏ DB</a>
 ├🌀 ᴍʏ ꜱᴇʀᴠᴇʀ : <a href=https://t.me/+6LwHBLWZc3IyMTU1>Click ker ke dekh lo😎😋</a>
-╰───────────────⍟ """
+╰───────────────⍟ 
+
+**🆕 Premium Features:**
+👑 Premium users get:
+• No verification needed
+• Instant file processing  
+• Priority encoding queue
+• Ad-free experience
+
+Contact admin for premium access!"""
