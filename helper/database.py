@@ -18,6 +18,12 @@ class Database:
             thumbnail=None,
             ffmpegcode=None,
             metadata=""" -map 0 -c:s copy -c:a copy -c:v copy -metadata title="Powered By:- @Kdramaland" -metadata author="@Snowball_Official" -metadata:s:s title="Subtitled By :- @Kdramaland" -metadata:s:a title="By :- @Kdramaland" -metadata:s:v title="By:- @Snowball_Official" """,
+            premium_status=dict(
+                is_premium=False,
+                premium_expires=0,
+                added_by=None,
+                added_on=None
+            ),
             verify_status=dict(
                 is_verified=False,
                 verified_time=0,
@@ -31,6 +37,67 @@ class Database:
                 ban_reason=''
             )
         )
+
+    # PREMIUM USER METHODS
+    async def add_premium_user(self, user_id, duration_seconds, added_by):
+        """Add premium access to user"""
+        expiry_time = datetime.datetime.now().timestamp() + duration_seconds
+        premium_status = dict(
+            is_premium=True,
+            premium_expires=expiry_time,
+            added_by=added_by,
+            added_on=datetime.datetime.now().isoformat()
+        )
+        await self.col.update_one({'id': int(user_id)}, {'$set': {'premium_status': premium_status}}, upsert=True)
+
+    async def remove_premium_user(self, user_id):
+        """Remove premium access from user"""
+        premium_status = dict(
+            is_premium=False,
+            premium_expires=0,
+            added_by=None,
+            added_on=None
+        )
+        await self.col.update_one({'id': int(user_id)}, {'$set': {'premium_status': premium_status}})
+
+    async def get_premium_status(self, user_id):
+        """Get premium status of user"""
+        user = await self.col.find_one({'id': int(user_id)})
+        if user:
+            premium_status = user.get('premium_status', {
+                'is_premium': False,
+                'premium_expires': 0,
+                'added_by': None,
+                'added_on': None
+            })
+            
+            # Check if premium has expired
+            if premium_status['is_premium'] and premium_status['premium_expires'] < datetime.datetime.now().timestamp():
+                await self.remove_premium_user(user_id)
+                return {
+                    'is_premium': False,
+                    'premium_expires': 0,
+                    'added_by': None,
+                    'added_on': None
+                }
+            
+            return premium_status
+        return {
+            'is_premium': False,
+            'premium_expires': 0,
+            'added_by': None,
+            'added_on': None
+        }
+
+    async def get_all_premium_users(self):
+        """Get all premium users"""
+        premium_users = self.col.find({'premium_status.is_premium': True})
+        return premium_users
+
+    async def is_premium_user(self, user_id):
+        """Check if user is premium"""
+        premium_status = await self.get_premium_status(user_id)
+        return premium_status['is_premium']
 
     # VERIFICATION METHODS
     async def get_verify_status(self, user_id):
