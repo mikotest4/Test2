@@ -45,9 +45,7 @@ async def refunc(client, message):
             "📁 Dᴏᴄᴜᴍᴇɴᴛ", callback_data="upload_document")]]
         if file.media in [MessageMediaType.VIDEO, MessageMediaType.DOCUMENT]:
             button.append([InlineKeyboardButton(
-                "🎥 Vɪᴅᴇᴏ", callback_data="upload_video")],[
-                InlineKeyboardButton( '💝 movies ', url='https://t.me/aapna_Movies')
-                ])
+                "🎥 Vɪᴅᴇᴏ", callback_data="upload_video")])
         elif file.media == MessageMediaType.AUDIO:
             button.append([InlineKeyboardButton(
                 "🎵 Aᴜᴅɪᴏ", callback_data="upload_audio")])
@@ -141,7 +139,7 @@ async def doc(bot, update):
                 thumb=ph_path,
                 caption=caption,
                 progress=progress_for_pyrogram,
-                progress_args=("⚠️__**Please wait...**__\n🌨️ **Uᴩʟᴏᴅ Sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
+                progress_args=("⚠️__**Please wait...**__\n🌨️ **Uᴩʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
         elif type == "video":
             await bot.send_video(
                 update.from_user.id,
@@ -150,7 +148,7 @@ async def doc(bot, update):
                 thumb=ph_path,
                 duration=duration,
                 progress=progress_for_pyrogram,
-                progress_args=("⚠️__**Please wait...**__\n🌨️ **Uᴩʟᴏᴅ Sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
+                progress_args=("⚠️__**Please wait...**__\n🌨️ **Uᴩʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
         elif type == "audio":
             await bot.send_audio(
                 update.from_user.id,
@@ -159,7 +157,7 @@ async def doc(bot, update):
                 thumb=ph_path,
                 duration=duration,
                 progress=progress_for_pyrogram,
-                progress_args=("⚠️__**Please wait...**__\n🌨️ **Uᴩʟᴏᴅ Sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
+                progress_args=("⚠️__**Please wait...**__\n🌨️ **Uᴩʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
     except Exception as e:
         os.remove(file_path)
         if ph_path:
@@ -167,18 +165,11 @@ async def doc(bot, update):
             os.remove(metadata_path)
         return await ms.edit(f" Eʀʀᴏʀ {e}")
     try:
-        os.remove(file_path)
+        os.remove(dl)
         os.remove(metadata_path)
         if ph_path:
             os.remove(ph_path)
     except Exception as e:
-        print(e)
+        pass
 
-    if update.message.chat.type == enums.ChatType.SUPERGROUP:
-        botusername = await bot.get_me()
-        await ms.edit(f"Hey {update.from_user.mention},\n\nI Have Send Renamed File To Your Pm", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(text="Bᴏᴛ Pᴍ", url=f'https://t.me/{botusername.username}')],[
-        InlineKeyboardButton( '💝 movies ', url='https://t.me/aapna_Movies')
-        ]
-        ]))
-    else:
-        await ms.delete()
+    await ms.delete()
