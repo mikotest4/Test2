@@ -4,6 +4,13 @@ class Txt(object):
 Hɪ {},
 
 I'ᴍ Fɪʟᴇs Eɴᴄᴏᴅᴇʀ ʙᴏᴛ ᴄᴀɴ ᴅᴏ ᴄᴏᴍᴘʀᴇss ʏᴏᴜʀ ғɪʟᴇs ɪɴ ɴᴇɢʟɪɢɪʙʟᴇ ᴡɪᴛʜᴏᴜᴛ ʟᴏss ᴏғ ǫᴜᴀʟɪᴛɪᴇs ᴊᴜsᴛ sᴇɴᴅ ᴍᴇ ᴠɪᴅᴇᴏ
+
+**📋 Access Levels:**
+• 👨‍💼 **Admin:** Encode anywhere (DM + Groups)
+• 👑 **Premium:** Groups only (DM restricted) 
+• 👤 **Regular:** Groups only (DM restricted)
+
+**💡 Note:** Only Bot Admin has DM encoding privileges.
 """
     GROUP_START_MSG = """
 Hɪ {},
@@ -11,6 +18,9 @@ Hɪ {},
 I'ᴍ Fɪʟᴇs Eɴᴄᴏᴅᴇʀ ʙᴏᴛ ᴄᴀɴ ᴄᴏᴍᴘʀᴇss ʏᴏᴜʀ ғɪʟᴇs ᴛᴏ ɴᴇɢʟɪɢɪʙʟᴇ sɪᴢᴇ ᴡɪᴛʜᴏᴜᴛ ʟᴏᴏsɪɴɢ ᴛʜᴇ ǫᴜᴀʟɪᴛɪᴇs ᴊᴜsᴛ sᴇɴᴅ ᴍᴇ ᴠɪᴅᴇᴏ
 
 ❗**Yᴏᴜ ʜᴀsɴ'ᴛ sᴛᴀʀᴛᴇᴅ ᴍᴇ ʏᴇᴛ ᴛᴏ ᴜsᴇ ᴍᴇ ғɪʀsᴛ sᴛᴀʀᴛ ᴍᴇ sᴏ ɪ ᴄᴀɴ ᴡᴏʀᴋ ғʟᴀᴡʟᴇssʟʏ**
+
+**🎉 Great News:** All users can encode files in groups!
+**📝 Remember:** Premium users still need verification for group usage.
 """
     PROGRESS_BAR = """<b>
 ╭━━━━❰ᴘʀᴏɢʀᴇss ʙᴀʀ❱━➣
@@ -60,6 +70,13 @@ Send me the correct ffmpeg code for more info.
 ➜ /see_caption - View caption 
 ➜ To Set Thumbnail just send photo
 
+**📋 Access Levels & Restrictions:**
+• 👨‍💼 **Admin:** Full access everywhere (DM + Groups)
+• 👑 **Premium:** Groups only, verification required
+• 👤 **Regular:** Groups only, verification required
+
+**❗ Important:** Only Bot Admin can encode in DM!
+
 **👑 Premium Commands:**
 ➜ /crf_480p - Set CRF for 480p compression
 ➜ /crf_720p - Set CRF for 720p compression  
@@ -92,4 +109,6 @@ Send me the correct ffmpeg code for more info.
 ├✏️ Lᴀɴɢᴜᴀɢᴇ: <a href=https://www.python.org>Pyᴛʜᴏɴ 3</a>
 ├💾 Dᴀᴛᴀ Bᴀꜱᴇ: <a href=https://cloud.mongodb.com>Mᴏɴɢᴏ DB</a>
 ├🌀 ᴍʏ ꜱᴇʀᴠᴇʀ : <a href=https://t.me/+6LwHBLWZc3IyMTU1>Click ker ke dekh lo😎😋</a>
+├🚫 DM Encoding : Admin Only
+├👥 Group Encoding : All Users (with verification)
 ╰───────────────⍟ """
