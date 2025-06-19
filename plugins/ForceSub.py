@@ -45,14 +45,7 @@ async def forces_sub_start(client, message):
 async def forces_sub_files(client, message):
     invite_link = await client.create_chat_invite_link(int(Config.AUTH_CHANNEL))
     buttons = [
-        [InlineKeyboardButton(text="📢 Join Update Channel 📢", url=invite_link.invite_link) ],
-        [
-         InlineKeyboardButton('📢 Join Update Channel 📢', url='https://t.me/+6LwHBLWZc3IyMTU1')   
-        ],
-        [
-         InlineKeyboardButton('📢 Join Update Channel 📢', url='https://t.me/+ccx-5xVHyro3ZjNl')     
-        ]
-    ]
+        [InlineKeyboardButton(text="📢 Join Update Channel 📢", url=invite_link.invite_link) ], ]
     text = "**Sᴏʀʀy Yᴏᴜ'ʀᴇ Nᴏᴛ Jᴏɪɴᴇᴅ My Cʜᴀɴɴᴇʟ 😐. Sᴏ Pʟᴇᴀꜱᴇ Jᴏɪɴ Oᴜʀ Uᴩᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ Tᴏ Cᴄᴏɴᴛɪɴᴜᴇ**"
 
     return await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
