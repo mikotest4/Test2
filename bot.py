@@ -11,6 +11,8 @@ from pytz import timezone
 from aiohttp import web
 from plugins.web_support import web_server
 import pyromod
+import asyncio
+from helper.database import db
 
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
@@ -35,6 +37,18 @@ class Bot (Client):
         me = await self.get_me()
         self.mention = me.mention
         self.username = me.username
+        
+        # Check and remove expired premium users
+        try:
+            expired_count = await db.check_and_remove_expired_premium()
+            if expired_count > 0:
+                logging.info(f"Removed {expired_count} expired premium users")
+        except Exception as e:
+            logging.error(f"Error checking expired premium users: {e}")
+        
+        # Start periodic premium expiry check (every 6 hours)
+        asyncio.create_task(self.periodic_premium_check())
+        
         app = web.AppRunner(await web_server())
         await app.setup()
         bind_address = "0.0.0.0"
@@ -52,6 +66,17 @@ class Bot (Client):
                 await self.send_message(Config.LOG_CHANNEL, f"**__{me.mention} Iꜱ Rᴇsᴛᴀʀᴛᴇᴅ !!**\n\n📅 Dᴀᴛᴇ : `{date}`\n⏰ Tɪᴍᴇ : `{time}`\n🌐 Tɪᴍᴇᴢᴏɴᴇ : `Asia/Kolkata`\n\n🉐 Vᴇʀsɪᴏɴ : `v{__version__} (Layer {layer})`</b>")
             except:
                 print("Pʟᴇᴀꜱᴇ Mᴀᴋᴇ Tʜɪꜱ Iꜱ Aᴅᴍɪɴ Iɴ Yᴏᴜʀ Lᴏɢ Cʜᴀɴɴᴇʟ")
+
+    async def periodic_premium_check(self):
+        """Periodically check and remove expired premium users"""
+        while True:
+            try:
+                await asyncio.sleep(21600)  # Wait 6 hours
+                expired_count = await db.check_and_remove_expired_premium()
+                if expired_count > 0:
+                    logging.info(f"Periodic check: Removed {expired_count} expired premium users")
+            except Exception as e:
+                logging.error(f"Error in periodic premium check: {e}")
 
     async def stop(self, *args):
         await super().stop()
