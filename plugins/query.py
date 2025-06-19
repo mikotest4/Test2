@@ -31,9 +31,9 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
         if is_admin:
             status_text = "👨‍💼 **ADMIN USER** - Full Access Everywhere"
         elif is_premium:
-            status_text = "👑 **PREMIUM USER** - Group Encoding Access"
+            status_text = "👑 **PREMIUM USER** - Group Access (No Verification)"
         else:
-            status_text = "👤 **REGULAR USER** - Group Encoding Only"
+            status_text = "👤 **REGULAR USER** - Group Access (Verification Required)"
             
         btn = [
             [InlineKeyboardButton(text='❗ Hᴇʟᴘ', callback_data='help'), InlineKeyboardButton(
@@ -85,9 +85,9 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
         if is_admin:
             access_level = "👨‍💼 Admin (Full Access)"
         elif is_premium:
-            access_level = "👑 Premium (Group Access)"
+            access_level = "👑 Premium (No Verification)"
         else:
-            access_level = "👤 Regular (Group Access)"
+            access_level = "👤 Regular (Verification Required)"
             
         location = "💬 Group Chat" if is_in_group else "📱 Private Chat"
         
@@ -140,7 +140,15 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
             ]
             
             # Add access level info to compression selection
-            user_access = "👨‍💼 Admin" if query.from_user.id == Config.ADMIN else ("👑 Premium" if await db.is_premium_user(query.from_user.id) else "👤 Regular")
+            is_admin = query.from_user.id == Config.ADMIN
+            is_premium = await db.is_premium_user(query.from_user.id)
+            
+            if is_admin:
+                user_access = "👨‍💼 Admin"
+            elif is_premium:
+                user_access = "👑 Premium (No Verification)"
+            else:
+                user_access = "👤 Regular (Verified)"
             
             compress_text = f'**Select the Compression Method Below 👇**\n\n**Your Access:** {user_access}\n**Location:** {"💬 Group" if query.message.chat.type in ["supergroup", "group"] else "📱 DM"}'
             
