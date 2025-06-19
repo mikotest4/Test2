@@ -49,12 +49,7 @@ Send me the correct ffmpeg code for more info.
 
     
     HELP_MSG = """
-**Available commands:**
-
-**🎬 File Processing:**
-➜ Send any video/audio/document to process
-
-**⚙️ Settings:**
+**🎥 Basic Commands:**
 ➜ /set_ffmpeg - To set custom ffmpeg code
 ➜ /set_metadata - To set custom metadata code
 ➜ /set_caption - To set custom caption
@@ -65,18 +60,25 @@ Send me the correct ffmpeg code for more info.
 ➜ /see_caption - View caption 
 ➜ To Set Thumbnail just send photo
 
-**📊 Status:**
-➜ /premium_status - Check your premium status
-➜ /verify_status - Check your verification status
+**👑 Premium Commands:**
+➜ /crf_480p - Set CRF for 480p compression
+➜ /crf_720p - Set CRF for 720p compression  
+➜ /crf_1080p - Set CRF for 1080p compression
+➜ /crf_4k - Set CRF for 4K compression
+➜ /vcodec - Set video codec (libx264/libx265/etc)
+➜ /preset - Set encoding preset (fast/slow/etc)
+➜ /encoding_settings - View all encoding settings
+➜ /reset_encoding - Reset to default settings
+➜ /premium_status - Check premium status
 
-**🔧 Other:**
-➜ /cancel - Cancel ongoing processes
-
-**👑 Premium Benefits:**
-• No verification required
-• Direct file encoding
-• Priority processing
-• Skip ads and waiting
+**🔧 Admin Commands:**
+➜ /addpremium - Add premium user
+➜ /revpremium - Remove premium user
+➜ /premiumusers - List premium users
+➜ /stats - Bot statistics
+➜ /broadcast - Broadcast message
+➜ /ban_user - Ban user
+➜ /unban_user - Unban user
 
 <b>⦿ Developer:</b> <a href=https://t.me/+6LwHBLWZc3IyMTU1>꧁༺ 𝓣𝓔𝓒𝓗_𝓗𝓔𝓡𝓞 ༻꧂ ❄️</a>
 """
@@ -90,13 +92,4 @@ Send me the correct ffmpeg code for more info.
 ├✏️ Lᴀɴɢᴜᴀɢᴇ: <a href=https://www.python.org>Pyᴛʜᴏɴ 3</a>
 ├💾 Dᴀᴛᴀ Bᴀꜱᴇ: <a href=https://cloud.mongodb.com>Mᴏɴɢᴏ DB</a>
 ├🌀 ᴍʏ ꜱᴇʀᴠᴇʀ : <a href=https://t.me/+6LwHBLWZc3IyMTU1>Click ker ke dekh lo😎😋</a>
-╰───────────────⍟ 
-
-**🆕 Premium Features:**
-👑 Premium users get:
-• No verification needed
-• Instant file processing  
-• Priority encoding queue
-• Ad-free experience
-
-Contact admin for premium access!"""
+╰───────────────⍟ """
