@@ -15,18 +15,220 @@ import datetime
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+def parse_time_duration(duration_str, unit):
+    """Parse duration string and unit to seconds"""
+    try:
+        duration = int(duration_str)
+        if unit.lower() in ['d', 'day', 'days']:
+            return duration * 24 * 60 * 60
+        elif unit.lower() in ['h', 'hour', 'hours']:
+            return duration * 60 * 60
+        elif unit.lower() in ['m', 'min', 'minute', 'minutes']:
+            return duration * 60
+        elif unit.lower() in ['s', 'sec', 'second', 'seconds']:
+            return duration
+        else:
+            return None
+    except ValueError:
+        return None
+
+def format_premium_expiry(timestamp):
+    """Format premium expiry timestamp to readable format"""
+    if timestamp == 0:
+        return "Never"
+    
+    expiry_time = datetime.datetime.fromtimestamp(timestamp)
+    current_time = datetime.datetime.now()
+    
+    if expiry_time <= current_time:
+        return "Expired"
+    
+    time_left = expiry_time - current_time
+    days = time_left.days
+    hours, remainder = divmod(time_left.seconds, 3600)
+    minutes, _ = divmod(remainder, 60)
+    
+    if days > 0:
+        return f"{days} days, {hours} hours"
+    elif hours > 0:
+        return f"{hours} hours, {minutes} minutes"
+    else:
+        return f"{minutes} minutes"
+
+@Client.on_message(filters.command("addpremium") & filters.user(Config.ADMIN))
+async def add_premium_user(bot: Client, message: Message):
+    if len(message.command) < 4:
+        await message.reply_text(
+            "**Usage:** `/addpremium user_id duration unit`\n\n"
+            "**Examples:**\n"
+            "• `/addpremium 1234567 30 d` - 30 days\n"
+            "• `/addpremium 1234567 12 h` - 12 hours\n"
+            "• `/addpremium 1234567 30 min` - 30 minutes\n\n"
+            "**Supported units:** d/day/days, h/hour/hours, m/min/minute/minutes",
+            quote=True
+        )
+        return
+
+    try:
+        user_id = int(message.command[1])
+        duration_str = message.command[2]
+        unit = message.command[3]
+        
+        duration_seconds = parse_time_duration(duration_str, unit)
+        
+        if duration_seconds is None:
+            await message.reply_text(
+                "❌ **Invalid duration or unit!**\n\n"
+                "**Supported units:** d/day/days, h/hour/hours, m/min/minute/minutes",
+                quote=True
+            )
+            return
+
+        # Add premium user
+        await db.add_premium_user(user_id, duration_seconds, message.from_user.id)
+        
+        # Calculate expiry time
+        expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=duration_seconds)
+        expiry_str = expiry_time.strftime("%Y-%m-%d %I:%M:%S %p IST")
+        
+        # Send success message
+        success_text = (
+            f"✅ **User `{user_id}` added as a premium user for {duration_str} {unit}.**\n\n"
+            f"**Expiration Time:** `{expiry_str}`"
+        )
+        
+        await message.reply_text(success_text, quote=True)
+        
+        # Notify the user
+        try:
+            await bot.send_message(
+                user_id,
+                f"🎉 **Congratulations!**\n\n"
+                f"You have been granted **Premium Access** for **{duration_str} {unit}**!\n\n"
+                f"**Benefits:**\n"
+                f"• No verification required\n"
+                f"• Direct file encoding\n"
+                f"• Priority processing\n\n"
+                f"**Expires:** `{expiry_str}`"
+            )
+        except Exception as e:
+            await message.reply_text(f"✅ Premium added but couldn't notify user: {str(e)}", quote=True)
+            
+    except ValueError:
+        await message.reply_text("❌ **Invalid user ID! Please provide a valid numeric user ID.**", quote=True)
+    except Exception as e:
+        await message.reply_text(f"❌ **Error:** {str(e)}", quote=True)
+
+@Client.on_message(filters.command("revpremium") & filters.user(Config.ADMIN))
+async def remove_premium_user(bot: Client, message: Message):
+    if len(message.command) != 2:
+        await message.reply_text(
+            "**Usage:** `/revpremium user_id`\n\n"
+            "**Example:** `/revpremium 1234567`",
+            quote=True
+        )
+        return
+
+    try:
+        user_id = int(message.command[1])
+        
+        # Check if user is premium first
+        premium_status = await db.get_premium_status(user_id)
+        
+        if not premium_status['is_premium']:
+            await message.reply_text(f"❌ **User `{user_id}` is not a premium user.**", quote=True)
+            return
+        
+        # Remove premium
+        await db.remove_premium_user(user_id)
+        
+        await message.reply_text(f"✅ **Premium access removed from user `{user_id}`.**", quote=True)
+        
+        # Notify the user
+        try:
+            await bot.send_message(
+                user_id,
+                "📢 **Premium Access Removed**\n\n"
+                "Your premium access has been revoked by an administrator.\n"
+                "You will now need to complete verification to use the bot."
+            )
+        except Exception as e:
+            await message.reply_text(f"✅ Premium removed but couldn't notify user: {str(e)}", quote=True)
+            
+    except ValueError:
+        await message.reply_text("❌ **Invalid user ID! Please provide a valid numeric user ID.**", quote=True)
+    except Exception as e:
+        await message.reply_text(f"❌ **Error:** {str(e)}", quote=True)
+
+@Client.on_message(filters.command("premiumusers") & filters.user(Config.ADMIN))
+async def list_premium_users(bot: Client, message: Message):
+    try:
+        premium_users = await db.get_all_premium_users()
+        premium_count = 0
+        text = "👑 **Premium Users List:**\n\n"
+        
+        async for user in premium_users:
+            user_id = user['id']
+            premium_status = user['premium_status']
+            
+            # Double-check if still premium (handles expiry)
+            current_status = await db.get_premium_status(user_id)
+            if not current_status['is_premium']:
+                continue
+                
+            premium_count += 1
+            expiry_time = premium_status['premium_expires']
+            time_left = format_premium_expiry(expiry_time)
+            added_by = premium_status.get('added_by', 'Unknown')
+            added_on = premium_status.get('added_on', 'Unknown')
+            
+            text += (
+                f"**{premium_count}.** `{user_id}`\n"
+                f"   • **Expires:** {time_left}\n"
+                f"   • **Added by:** `{added_by}`\n"
+                f"   • **Added on:** {added_on[:10] if added_on != 'Unknown' else 'Unknown'}\n\n"
+            )
+        
+        if premium_count == 0:
+            text = "📭 **No premium users found.**"
+        else:
+            text = f"👑 **Total Premium Users:** `{premium_count}`\n\n" + text
+        
+        if len(text) > 4096:
+            with open('premium-users.txt', 'w') as f:
+                f.write(text)
+            await message.reply_document('premium-users.txt', quote=True)
+            os.remove('premium-users.txt')
+        else:
+            await message.reply_text(text, quote=True)
+            
+    except Exception as e:
+        await message.reply_text(f"❌ **Error:** {str(e)}", quote=True)
 
 @Client.on_message(filters.command(["stats", "status"]) & filters.user(Config.ADMIN))
 async def get_stats(bot, message):
     total_users = await db.total_users_count()
-    uptime = time.strftime("%Hh%Mm%Ss", time.gmtime(
-        time.time() - Config.BOT_UPTIME))
+    premium_users = await db.get_all_premium_users()
+    premium_count = 0
+    async for user in premium_users:
+        if await db.is_premium_user(user['id']):
+            premium_count += 1
+    
+    uptime = time.strftime("%Hh%Mm%Ss", time.gmtime(time.time() - Config.BOT_UPTIME))
     start_t = time.time()
     st = await message.reply('**Aᴄᴄᴇꜱꜱɪɴɢ Tʜᴇ Dᴇᴛᴀɪʟꜱ.....**')
     end_t = time.time()
     time_taken_s = (end_t - start_t) * 1000
-    await st.edit(text=f"**--Bᴏᴛ Sᴛᴀᴛᴜꜱ--** \n\n**⌚️ Bᴏᴛ Uᴩᴛɪᴍᴇ:** {uptime} \n**🐌 Cᴜʀʀᴇɴᴛ Pɪɴɢ:** `{time_taken_s:.3f} ᴍꜱ` \n**👭 Tᴏᴛᴀʟ Uꜱᴇʀꜱ:** `{total_users}`")
-
+    
+    stats_text = (
+        f"**--Bᴏᴛ Sᴛᴀᴛᴜꜱ--**\n\n"
+        f"**⌚️ Bᴏᴛ Uᴩᴛɪᴍᴇ:** {uptime}\n"
+        f"**🐌 Cᴜʀʀᴇɴᴛ Pɪɴɢ:** `{time_taken_s:.3f} ᴍꜱ`\n"
+        f"**👭 Tᴏᴛᴀʟ Uꜱᴇʀꜱ:** `{total_users}`\n"
+        f"**👑 Pʀᴇᴍɪᴜᴍ Uꜱᴇʀꜱ:** `{premium_count}`"
+    )
+    
+    await st.edit(text=stats_text)
 
 # Restart to cancell all process
 @Client.on_message(filters.private & filters.command("restart") & filters.user(Config.ADMIN))
