@@ -21,8 +21,8 @@ class Config(object):
     START_PIC = os.environ.get("START_PIC", "https://graph.org/file/15e82d7e665eccc8bd9c5.jpg")
 
     # Shortener Configuration
-    SHORTLINK_URL = os.environ.get("SHORTLINK_URL", "linkcents.com")
-    SHORTLINK_API = os.environ.get("SHORTLINK_API", "cd46872379edda58d52d692067b912f43ba96b7d")
+    SHORTLINK_URL = os.environ.get("SHORTLINK_URL", "reel2earn.com")
+    SHORTLINK_API = os.environ.get("SHORTLINK_API", "74508ee9f003899307cca7addf6013053e1f567e")
     VERIFY_EXPIRE = int(os.environ.get('VERIFY_EXPIRE', "86400"))  # 24 hours in seconds
     TUT_VID = os.environ.get("TUT_VID", "https://t.me/+yReU8NWVB-s3YzNl")
 
