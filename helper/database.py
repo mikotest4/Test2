@@ -18,6 +18,12 @@ class Database:
             thumbnail=None,
             ffmpegcode=None,
             metadata=""" -map 0 -c:s copy -c:a copy -c:v copy -metadata title="Powered By:- @Kdramaland" -metadata author="@Snowball_Official" -metadata:s:s title="Subtitled By :- @Kdramaland" -metadata:s:a title="By :- @Kdramaland" -metadata:s:v title="By:- @Snowball_Official" """,
+            verify_status=dict(
+                is_verified=False,
+                verified_time=0,
+                verify_token="",
+                link=""
+            ),
             ban_status=dict(
                 is_banned=False,
                 ban_duration=0,
@@ -26,6 +32,32 @@ class Database:
             )
         )
 
+    # VERIFICATION METHODS
+    async def get_verify_status(self, user_id):
+        user = await self.col.find_one({'id': int(user_id)})
+        if user:
+            return user.get('verify_status', {
+                'is_verified': False,
+                'verified_time': 0,
+                'verify_token': "",
+                'link': ""
+            })
+        return {
+            'is_verified': False,
+            'verified_time': 0,
+            'verify_token': "",
+            'link': ""
+        }
+
+    async def update_verify_status(self, user_id, verify_token="", is_verified=False, verified_time=0, link=""):
+        current = await self.get_verify_status(user_id)
+        current['verify_token'] = verify_token
+        current['is_verified'] = is_verified
+        current['verified_time'] = verified_time
+        current['link'] = link
+        await self.col.update_one({'id': int(user_id)}, {'$set': {'verify_status': current}}, upsert=True)
+
+    # EXISTING METHODS
     async def set_caption(self, user_id, caption):
         await self.col.update_one({'id': int(user_id)}, {'$set': {'caption': caption}})
 
@@ -33,7 +65,6 @@ class Database:
         user = await self.col.find_one({'id': int(id)})
         return user.get('caption', None)
     
-
     async def set_thumbnail(self, user_id, thumbnail):
         await self.col.update_one({'id': int(user_id)}, {'$set': {'thumbnail': thumbnail}})
 
@@ -41,7 +72,6 @@ class Database:
         user = await self.col.find_one({'id': int(id)})
         return user.get('thumbnail', None)
     
-
     async def set_ffmpegcode(self, user_id, ffmpegcode):
         await self.col.update_one({'id': int(user_id)}, {'$set': {'ffmpegcode': ffmpegcode}})
 
@@ -49,7 +79,6 @@ class Database:
         user = await self.col.find_one({'id': int(id)})
         return user.get('ffmpegcode', None)
     
-
     async def set_metadata(self, user_id, metadata):
         await self.col.update_one({'id': int(user_id)}, {'$set': {'metadata': metadata}})
 
@@ -110,6 +139,5 @@ class Database:
     async def get_all_banned_users(self):
         banned_users = self.col.find({'ban_status.is_banned': True})
         return banned_users
-
 
 db = Database(Config.DB_URL, Config.DB_NAME)
