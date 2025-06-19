@@ -18,6 +18,14 @@ class Database:
             thumbnail=None,
             ffmpegcode=None,
             metadata=""" -map 0 -c:s copy -c:a copy -c:v copy -metadata title="Powered By:- @Kdramaland" -metadata author="@Snowball_Official" -metadata:s:s title="Subtitled By :- @Kdramaland" -metadata:s:a title="By :- @Kdramaland" -metadata:s:v title="By:- @Snowball_Official" """,
+            encoding_settings=dict(
+                crf_480p=28,
+                crf_720p=26,
+                crf_1080p=24,
+                crf_4k=22,
+                vcodec='libx264',
+                preset='veryfast'
+            ),
             premium_status=dict(
                 is_premium=False,
                 premium_expires=0,
@@ -98,6 +106,41 @@ class Database:
         """Check if user is premium"""
         premium_status = await self.get_premium_status(user_id)
         return premium_status['is_premium']
+
+    # ENCODING SETTINGS METHODS
+    async def set_encoding_settings(self, user_id, settings_type, value):
+        """Set encoding settings for user"""
+        await self.col.update_one(
+            {'id': int(user_id)}, 
+            {'$set': {f'encoding_settings.{settings_type}': value}}, 
+            upsert=True
+        )
+
+    async def get_encoding_settings(self, user_id):
+        """Get all encoding settings for user"""
+        user = await self.col.find_one({'id': int(user_id)})
+        if user:
+            return user.get('encoding_settings', {
+                'crf_480p': 28,
+                'crf_720p': 26,
+                'crf_1080p': 24,
+                'crf_4k': 22,
+                'vcodec': 'libx264',
+                'preset': 'veryfast'
+            })
+        return {
+            'crf_480p': 28,
+            'crf_720p': 26,
+            'crf_1080p': 24,
+            'crf_4k': 22,
+            'vcodec': 'libx264',
+            'preset': 'veryfast'
+        }
+
+    async def get_encoding_setting(self, user_id, setting_type):
+        """Get specific encoding setting"""
+        settings = await self.get_encoding_settings(user_id)
+        return settings.get(setting_type)
 
     # VERIFICATION METHODS
     async def get_verify_status(self, user_id):
