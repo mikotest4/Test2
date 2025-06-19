@@ -11,7 +11,7 @@ class Config(object):
     AUTH_CHANNEL = int(FORCE_SUB) if FORCE_SUB and id_pattern.search(FORCE_SUB) else None
    
     # database config
-    DB_URL  = os.environ.get("DB_URL", "mongodb+srv://rani828719:sVyRWZOrUzIWNfHp@cluster0.zodktob.mongodb.net/?retryWrites=true&w=majority")  # ⚠️ Required
+    DB_URI  = os.environ.get("DB_URI", "mongodb+srv://rani828719:sVyRWZOrUzIWNfHp@cluster0.zodktob.mongodb.net/?retryWrites=true&w=majority")  # ⚠️ Required
     DB_NAME  = os.environ.get("DB_NAME","SnowEncoderBot") 
 
     # Other Configs 
@@ -21,10 +21,15 @@ class Config(object):
     START_PIC = os.environ.get("START_PIC", "https://graph.org/file/15e82d7e665eccc8bd9c5.jpg")
 
     # Shortener Configuration
-    SHORTLINK_URL = os.environ.get("SHORTLINK_URL", "reel2earn.com")
-    SHORTLINK_API = os.environ.get("SHORTLINK_API", "74508ee9f003899307cca7addf6013053e1f567e")
+    SHORTLINK_URL = os.environ.get("SHORTLINK_URL", "shortner.in")
+    SHORTLINK_API = os.environ.get("SHORTLINK_API", "your_api_key_here")
     VERIFY_EXPIRE = int(os.environ.get('VERIFY_EXPIRE', "86400"))  # 24 hours in seconds
     TUT_VID = os.environ.get("TUT_VID", "https://t.me/+yReU8NWVB-s3YzNl")
+
+    # Premium Configuration
+    PREMIUM_ENABLED = True  # Enable premium features
+    MAX_CONCURRENT_NON_PREMIUM = 1  # Non-premium users can encode only 1 file at a time
+    MAX_CONCURRENT_PREMIUM = 10  # Premium users can encode up to 10 files simultaneously
 
     # wes response configuration     
     WEBHOOK = bool(os.environ.get("WEBHOOK", True))
