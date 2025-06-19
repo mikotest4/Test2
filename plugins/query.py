@@ -22,13 +22,10 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
 
         await query.message.edit(text=Txt.HELP_MSG, reply_markup=InlineKeyboardMarkup(btn), disable_web_page_preview=True)
 
-    if data == 'home':
+    elif data == 'home':
         btn = [
             [InlineKeyboardButton(text='❗ Hᴇʟᴘ', callback_data='help'), InlineKeyboardButton(
                 text='🌨️ Aʙᴏᴜᴛ', callback_data='about')],
-                [
-                InlineKeyboardButton( '💝 movies ', url='https://t.me/aapna_Movies')
-                ],
             [InlineKeyboardButton(text='📢 Uᴘᴅᴀᴛᴇs', url='https://t.me/+ccx-5xVHyro3ZjNl'), InlineKeyboardButton
                 (text='💻 Dᴇᴠᴇʟᴏᴘᴇʀ', url='https://t.me/+6LwHBLWZc3IyMTU1')]
         ]
@@ -67,11 +64,7 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
 
         text = f"""**__What do you want me to do with this file.?__**\n\n**File Name** :- `{file.file_name}`\n\n**File Size** :- `{humanize.naturalsize(file.file_size)}`"""
         buttons = [[InlineKeyboardButton("Rᴇɴᴀᴍᴇ 📝", callback_data=f"rename-{query.from_user.id}")],
-                   [InlineKeyboardButton("Cᴏᴍᴘʀᴇss 🗜️", callback_data=f"compress-{query.from_user.id}")],
-                  [
-                InlineKeyboardButton( '💝 movies ', url='https://t.me/aapna_Movies')
-                ]
-                  ]
+                   [InlineKeyboardButton("Cᴏᴍᴘʀᴇss 🗜️", callback_data=f"compress-{query.from_user.id}")]]
 
         await query.message.edit(text=text, reply_markup=InlineKeyboardMarkup(buttons))
 
@@ -166,7 +159,7 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
             vcodec = settings['vcodec']
             preset = settings['preset']
             
-            ffmpeg = f"-preset {preset} -c:v {vcodec} -s 3840x2160 -crf {crf} -pix_fmt yuv420p -c:a libopus -b:a 32k -c:s copy -map 0 -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 5"
+            ffmpeg = f"-preset {preset} -c:v {vcodec} -s 3840x2160 -crf {crf} -pix_fmt yuv420p -c:a libopus -b:a 32k -c:s copy -map 0 -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 10"
             await CompressVideo(bot=bot, query=query, ffmpegcode=ffmpeg, c_thumb=c_thumb)
 
         except Exception as e:
@@ -176,33 +169,15 @@ async def Cb_Handle(bot: Client, query: CallbackQuery):
 
         try:
             c_thumb = await db.get_thumbnail(query.from_user.id)
-            ffmpeg_code = await db.get_ffmpegcode(query.from_user.id)
-
-            if ffmpeg_code:
-                await CompressVideo(bot=bot, query=query, ffmpegcode=ffmpeg_code, c_thumb=c_thumb)
-
+            ffmpeg = await db.get_ffmpegcode(query.from_user.id)
+            if ffmpeg:
+                await CompressVideo(bot=bot, query=query, ffmpegcode=ffmpeg, c_thumb=c_thumb)
             else:
-                BUTT = [
-                    [InlineKeyboardButton(
-                        text='Sᴇᴛ Fғᴍᴘᴇɢ Cᴏᴅᴇ', callback_data='setffmpeg')],
-                    [InlineKeyboardButton(
-                        text='⟸ Bᴀᴄᴋ', callback_data=f'compress-{query.from_user.id}')]
-                ]
-                await query.message.edit(text="You Don't Have Any Custom FFMPEG Code. 🛃", reply_markup=InlineKeyboardMarkup(BUTT))
+                btn = [[InlineKeyboardButton(
+                    text='❌ Close', callback_data='close')], [InlineKeyboardButton(text='Sᴇᴛ Fғᴍᴘᴇɢ', callback_data='setffmpeg')]]
+                await query.message.edit("**Fɪʀsᴛ Sᴇᴛ Yᴏᴜʀ Cᴜsᴛᴏᴍ Fғᴍᴘᴇɢ Cᴏᴅᴇ**", reply_markup=InlineKeyboardMarkup(btn))
         except Exception as e:
             print(e)
 
-    elif data.startswith("close"):
-
-        user_id = data.split('-')[1]
-        
-        if int(user_id) not in [query.from_user.id, 0]:
-            return await query.answer(f"⚠️ Hᴇʏ {query.from_user.first_name}\nTʜɪs ɪs ɴᴏᴛ ʏᴏᴜʀ ғɪʟᴇ ʏᴏᴜ ᴄᴀɴ'ᴛ ᴅᴏ ᴀɴʏ ᴏᴘᴇʀᴀᴛɪᴏɴ", show_alert=True)
-        
-        try:
-            await query.message.delete()
-            await query.message.reply_to_message.delete()
-            await query.message.continue_propagation()
-        except:
-            await query.message.delete()
-            await query.message.continue_propagation()
+    elif query.data == "close":
+        await query.message.delete()
