@@ -6,9 +6,9 @@ Hɪ {},
 I'ᴍ Fɪʟᴇs Eɴᴄᴏᴅᴇʀ ʙᴏᴛ ᴄᴀɴ ᴅᴏ ᴄᴏᴍᴘʀᴇss ʏᴏᴜʀ ғɪʟᴇs ɪɴ ɴᴇɢʟɪɢɪʙʟᴇ ᴡɪᴛʜᴏᴜᴛ ʟᴏss ᴏғ ǫᴜᴀʟɪᴛɪᴇs ᴊᴜsᴛ sᴇɴᴅ ᴍᴇ ᴠɪᴅᴇᴏ
 
 **📋 Access Levels:**
-• 👨‍💼 **Admin:** Encode anywhere (DM + Groups)
-• 👑 **Premium:** Groups only (DM restricted) 
-• 👤 **Regular:** Groups only (DM restricted)
+• 👨‍💼 **Admin:** DM + Groups (No verification)
+• 👑 **Premium:** Groups only (No verification) 
+• 👤 **Regular:** Groups only (Verification required)
 
 **💡 Note:** Only Bot Admin has DM encoding privileges.
 """
@@ -19,8 +19,9 @@ I'ᴍ Fɪʟᴇs Eɴᴄᴏᴅᴇʀ ʙᴏᴛ ᴄᴀɴ ᴄᴏᴍᴘʀᴇss ʏᴏᴜ
 
 ❗**Yᴏᴜ ʜᴀsɴ'ᴛ sᴛᴀʀᴛᴇᴅ ᴍᴇ ʏᴇᴛ ᴛᴏ ᴜsᴇ ᴍᴇ ғɪʀsᴛ sᴛᴀʀᴛ ᴍᴇ sᴏ ɪ ᴄᴀɴ ᴡᴏʀᴋ ғʟᴀᴡʟᴇssʟʏ**
 
-**🎉 Great News:** All users can encode files in groups!
-**📝 Remember:** Premium users still need verification for group usage.
+**🎉 Great News:** 
+• Premium users: No verification needed!
+• Regular users: Quick verification required
 """
     PROGRESS_BAR = """<b>
 ╭━━━━❰ᴘʀᴏɢʀᴇss ʙᴀʀ❱━➣
@@ -71,9 +72,9 @@ Send me the correct ffmpeg code for more info.
 ➜ To Set Thumbnail just send photo
 
 **📋 Access Levels & Restrictions:**
-• 👨‍💼 **Admin:** Full access everywhere (DM + Groups)
-• 👑 **Premium:** Groups only, verification required
-• 👤 **Regular:** Groups only, verification required
+• 👨‍💼 **Admin:** DM + Groups (No verification)
+• 👑 **Premium:** Groups only (No verification)
+• 👤 **Regular:** Groups only (Verification required)
 
 **❗ Important:** Only Bot Admin can encode in DM!
 
@@ -110,5 +111,6 @@ Send me the correct ffmpeg code for more info.
 ├💾 Dᴀᴛᴀ Bᴀꜱᴇ: <a href=https://cloud.mongodb.com>Mᴏɴɢᴏ DB</a>
 ├🌀 ᴍʏ ꜱᴇʀᴠᴇʀ : <a href=https://t.me/+6LwHBLWZc3IyMTU1>Click ker ke dekh lo😎😋</a>
 ├🚫 DM Encoding : Admin Only
-├👥 Group Encoding : All Users (with verification)
+├👥 Group Encoding : All Users
+├👑 Premium Benefits : No verification needed
 ╰───────────────⍟ """
