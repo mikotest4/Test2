@@ -83,17 +83,24 @@ async def Handle_StartMsg(bot: Client, msg: Message):
             await Snowdev.delete()
             await msg.reply_text(text=start_text, reply_markup=InlineKeyboardMarkup(btn), reply_to_message_id=msg.id)
 
-@Client.on_message((filters.private | filters.group) & (filters.document | filters.audio | filters.video))
+@Client.on_message((filters.private | filters.group) & (filters.document | filters.audio | filters.video) & ~filters.sticker & ~filters.animation)
 async def Files_Option(bot: Client, message: Message):
     user_id = message.from_user.id
     chat_type = message.chat.type
     
-    SnowDev = await message.reply_text(text='**Please Wait**', reply_to_message_id=message.id)
+    # Check if it's a group and bot should reply
+    is_in_group = chat_type in [enums.ChatType.SUPERGROUP, enums.ChatType.GROUP]
+    
+    if is_in_group:
+        # In group: Reply to the message
+        SnowDev = await message.reply_text(text='**🤖 Bot Detected File - Processing...**', reply_to_message_id=message.id)
+    else:
+        # In DM: Send normal message
+        SnowDev = await message.reply_text(text='**Please Wait**', reply_to_message_id=message.id)
 
     # Check if user is admin
     is_admin = user_id == Config.ADMIN
     is_premium = await db.is_premium_user(user_id)
-    is_in_group = chat_type in [enums.ChatType.SUPERGROUP, enums.ChatType.GROUP]
 
     # New restriction logic - Only admin can encode in DM
     if not is_admin and not is_in_group:
@@ -132,19 +139,21 @@ async def Files_Option(bot: Client, message: Message):
                     [InlineKeyboardButton('📺 ᴛᴜᴛᴏʀɪᴀʟ', url=Config.TUT_VID)]
                 ]
                 
+                verification_text = (
+                    f"🔒 **Verification Required**\n\n"
+                    f"You need to verify yourself before encoding videos in groups.\n\n"
+                    f"⏱️ **Token Validity:** {get_exp_time(Config.VERIFY_EXPIRE)}\n\n"
+                    f"**How to verify:**\n"
+                    f"1. Click '🔗 ᴠᴇʀɪғʏ ɴᴏᴡ' button\n"
+                    f"2. Complete the verification process\n"
+                    f"3. Return to bot and send /start\n"
+                    f"4. Send your file again\n\n"
+                    f"**Note:** This helps support the bot through ads.\n\n"
+                    f"💡 **Get premium to skip verification!**"
+                )
+                
                 return await SnowDev.edit(
-                    text=(
-                        f"🔒 **Verification Required**\n\n"
-                        f"You need to verify yourself before encoding videos in groups.\n\n"
-                        f"⏱️ **Token Validity:** {get_exp_time(Config.VERIFY_EXPIRE)}\n\n"
-                        f"**How to verify:**\n"
-                        f"1. Click '🔗 ᴠᴇʀɪғʏ ɴᴏᴡ' button\n"
-                        f"2. Complete the verification process\n"
-                        f"3. Return to bot and send /start\n"
-                        f"4. Send your file again\n\n"
-                        f"**Note:** This helps support the bot through ads.\n\n"
-                        f"💡 **Get premium to skip verification!**"
-                    ),
+                    text=verification_text,
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
             except Exception as e:
@@ -166,7 +175,11 @@ async def Files_Option(bot: Client, message: Message):
     location = "💬 Group Chat" if is_in_group else "📱 Private Chat"
     
     try:
-        file_info = f"**📁 File Information**\n\n**File Name:** `{filename}`\n**File Size:** `{filesize}`\n\n**👤 Access Level:** {access_level}\n**📍 Location:** {location}"
+        # Different message format for groups vs DMs
+        if is_in_group:
+            file_info = f"**🤖 File Detected & Ready for Processing**\n\n**📁 File Name:** `{filename}`\n**📊 File Size:** `{filesize}`\n\n**👤 User:** {message.from_user.mention}\n**🏷️ Access Level:** {access_level}\n**📍 Location:** {location}"
+        else:
+            file_info = f"**📁 File Information**\n\n**File Name:** `{filename}`\n**File Size:** `{filesize}`\n\n**👤 Access Level:** {access_level}\n**📍 Location:** {location}"
         
         btn = [[InlineKeyboardButton("📂 What do you want to do with this file?", callback_data="option")]]
         
