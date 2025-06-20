@@ -1,3 +1,33 @@
+# Progress Message Templates
+
+DOWNLOAD_PROGRESS = """
+**Downloading**
+
+{filename}
+
+{current} Out Of {total}
+[{progress_bar}] {percentage}%
+
+**Speed:** {speed}
+**ETA:** {eta}
+**Elapsed:** {elapsed}
+"""
+
+UPLOAD_PROGRESS = """
+**Uploading**
+
+{filename}
+
+{current} Out Of {total}
+[{progress_bar}] {percentage}%
+
+**Speed:** {speed}
+**ETA:** {eta}
+**Elapsed:** {elapsed}
+"""
+
+# Main Text Class
+
 class Txt(object):
 
     PRIVATE_START_MSG = """
@@ -12,6 +42,7 @@ I'ᴍ Fɪʟᴇs Eɴᴄᴏᴅᴇʀ ʙᴏᴛ ᴄᴀɴ ᴅᴏ ᴄᴏᴍᴘʀᴇss �
 
 **💡 Note:** Only Bot Admin has DM encoding privileges.
 """
+
     GROUP_START_MSG = """
 Hɪ {},
 
@@ -23,6 +54,7 @@ I'ᴍ Fɪʟᴇs Eɴᴄᴏᴅᴇʀ ʙᴏᴛ ᴄᴀɴ ᴄᴏᴍᴘʀᴇss ʏᴏᴜ
 • Premium users: No verification needed!
 • Regular users: Quick verification required
 """
+
     PROGRESS_BAR = """<b>
 ╭━━━━❰ᴘʀᴏɢʀᴇss ʙᴀʀ❱━➣
 ┣⪼ 🗃️ Sɪᴢᴇ: {1} | {2}
@@ -35,7 +67,6 @@ I'ᴍ Fɪʟᴇs Eɴᴄᴏᴅᴇʀ ʙᴏᴛ ᴄᴀɴ ᴄᴏᴍᴘʀᴇss ʏᴏᴜ
 ❪ SET CUSTOM FFMPEG CODE ❫
 
 Send me the correct ffmpeg code for more info.
-
 
 ☛ <a href=https://unix.stackexchange.com/questions/28803/how-can-i-reduce-a-videos-size-with-ffmpeg#:~:text=ffmpeg%20%2Di%20input.mp4%20%2Dvcodec%20libx265%20%2Dcrf%2028%20output.mp4> FOR HELP </a>
 
@@ -58,7 +89,6 @@ Send me the correct ffmpeg code for more info.
 📥 Fᴏʀ Hᴇʟᴘ [Cᴏɴᴛ](https://t.me/+6LwHBLWZc3IyMTU1) 
 """
 
-    
     HELP_MSG = """
 **🎥 Basic Commands:**
 ➜ /set_ffmpeg - To set custom ffmpeg code
