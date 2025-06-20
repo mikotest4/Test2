@@ -148,17 +148,7 @@ async def Files_Option(bot: Client, message: Message):
         access_level = "👑 Premium User" if is_premium else "👤 Regular User"
         
         restriction_text = (
-            f"🚫 **DM Encoding Restricted**\n\n"
-            f"**Your Access Level:** {access_level}\n"
-            f"**Current Location:** 📱 Private Chat\n\n"
-            f"**Only Admin can encode in DM.**\n"
-            f"**All other users must use groups for encoding.**\n\n"
-            f"**How to encode:**\n"
-            f"• Add me to a group\n"
-            f"• Give me admin permissions\n"
-            f"• Send your file in the group\n\n"
-            f"**Want DM access?** Only available for Bot Admin."
-        )
+            f"**ʏᴏᴜ ᴄᴀɴ'ᴛ ᴜsᴇ ᴍᴇ ɪɴ ᴅᴍ ʏᴏᴜ ᴄᴀɴ ᴜsᴇ ᴍᴇ ʜᴇʀᴇ ᴊᴏɪɴ ᴀɴᴅ ᴜsᴇ :- **")
         
         try:
             return await SnowDev.edit(restriction_text)
