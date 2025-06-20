@@ -39,9 +39,8 @@ async def Handle_StartMsg(bot: Client, msg: Message):
             await db.update_verify_status(user_id, is_verified=True, verified_time=time.time())
             
             return await msg.reply_text(
-                f"✅ **Verification Successful!**\n\n"
-                f"Your token has been verified and is valid for **{get_exp_time(Config.VERIFY_EXPIRE)}**.\n\n"
-                f"🎬 You can now send video files to encode them in groups!",
+                f"✅ **Verification Successful!**\n"
+                f"Your token has been verified and is valid for **{get_exp_time(Config.VERIFY_EXPIRE)}**",
                 quote=True
             )
         except Exception as e:
@@ -147,18 +146,7 @@ async def Files_Option(bot: Client, message: Message):
     if not is_admin and not is_in_group:
         access_level = "👑 Premium User" if is_premium else "👤 Regular User"
         
-        restriction_text = (
-            f"🚫 **DM Encoding Restricted**\n\n"
-            f"**Your Access Level:** {access_level}\n"
-            f"**Current Location:** 📱 Private Chat\n\n"
-            f"**Only Admin can encode in DM.**\n"
-            f"**All other users must use groups for encoding.**\n\n"
-            f"**How to encode:**\n"
-            f"• Add me to a group\n"
-            f"• Give me admin permissions\n"
-            f"• Send your file in the group\n\n"
-            f"**Want DM access?** Only available for Bot Admin."
-        )
+        restriction_text = (f"**ʏᴏᴜ ᴄᴀɴ'ᴛ ᴜsᴇ ᴍᴇ ɪɴ ᴅᴍ. ᴜsᴇ ᴍᴇ ʜᴇʀᴇ :-  **")
         
         try:
             return await SnowDev.edit(restriction_text)
@@ -200,8 +188,8 @@ async def Files_Option(bot: Client, message: Message):
                 verification_link = await create_verification_link(user_id, botusername, db)
                 
                 btn = [
-                    [InlineKeyboardButton("🔗 ᴠᴇʀɪғʏ ɴᴏᴡ", url=verification_link)],
-                    [InlineKeyboardButton('📺 ᴛᴜᴛᴏʀɪᴀʟ', url=Config.TUT_VID)]
+                    [InlineKeyboardButton("ᴠᴇʀɪғʏ ɴᴏᴡ", url=verification_link)],
+                    [InlineKeyboardButton('ᴛᴜᴛᴏʀɪᴀʟ', url=Config.TUT_VID)]
                 ]
                 
                 verification_text = (
@@ -214,7 +202,7 @@ async def Files_Option(bot: Client, message: Message):
                     f"3. Return to bot and send /start\n"
                     f"4. Send your file again\n\n"
                     f"**Note:** This helps support the bot through ads.\n\n"
-                    f"💡 **Get premium to skip verification!**"
+                    f"💡 **Get premium to skip verification! ᴅᴍ @Yae_x_Miko**"
                 )
                 
                 try:
@@ -271,7 +259,7 @@ async def Files_Option(bot: Client, message: Message):
         else:
             file_info = f"**📁 File Information**\n\n**File Name:** `{filename}`\n**File Size:** `{filesize}`\n\n**👤 Access Level:** {access_level}\n**📍 Location:** {location}"
         
-        btn = [[InlineKeyboardButton("📂 What do you want to do with this file?", callback_data="option")]]
+        btn = [[InlineKeyboardButton("ᴄʟɪᴄᴋ ʜᴇʀᴇ", callback_data="option")]]
         
         try:
             await SnowDev.edit(text=file_info, reply_markup=InlineKeyboardMarkup(btn))
