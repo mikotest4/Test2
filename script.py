@@ -37,10 +37,11 @@ I'ᴍ Fɪʟᴇs Eɴᴄᴏᴅᴇʀ ʙᴏᴛ ᴄᴀɴ ᴅᴏ ᴄᴏᴍᴘʀᴇss �
 
 **📋 Access Levels:**
 • 👨‍💼 **Admin:** DM + Groups (No verification)
-• 👑 **Premium:** Groups only (No verification) 
+• 👑 **Premium:** DM + Groups (No verification + Custom Settings) 
 • 👤 **Regular:** Groups only (Verification required)
 
 **💡 Note:** Only Bot Admin has DM encoding privileges.
+**🎉 Premium Benefit:** Access custom encoding settings in groups!
 """
 
     GROUP_START_MSG = """
@@ -51,7 +52,7 @@ I'ᴍ Fɪʟᴇs Eɴᴄᴏᴅᴇʀ ʙᴏᴛ ᴄᴀɴ ᴄᴏᴍᴘʀᴇss ʏᴏᴜ
 ❗**Yᴏᴜ ʜᴀsɴ'ᴛ sᴛᴀʀᴛᴇᴅ ᴍᴇ ʏᴇᴛ ᴛᴏ ᴜsᴇ ᴍᴇ ғɪʀsᴛ sᴛᴀʀᴛ ᴍᴇ sᴏ ɪ ᴄᴀɴ ᴡᴏʀᴋ ғʟᴀᴡʟᴇssʟʏ**
 
 **🎉 Great News:** 
-• Premium users: No verification needed!
+• Premium users: No verification needed + Custom settings in groups!
 • Regular users: Quick verification required
 """
 
@@ -103,12 +104,12 @@ Send me the correct ffmpeg code for more info.
 
 **📋 Access Levels & Restrictions:**
 • 👨‍💼 **Admin:** DM + Groups (No verification)
-• 👑 **Premium:** Groups only (No verification)
+• 👑 **Premium:** DM + Groups (No verification + Custom Settings)
 • 👤 **Regular:** Groups only (Verification required)
 
 **❗ Important:** Only Bot Admin can encode in DM!
 
-**👑 Premium Commands:**
+**👑 Premium Commands (Available in Groups & DM):**
 ➜ /crf_480p - Set CRF for 480p compression
 ➜ /crf_720p - Set CRF for 720p compression  
 ➜ /crf_1080p - Set CRF for 1080p compression
@@ -142,5 +143,5 @@ Send me the correct ffmpeg code for more info.
 ├🌀 ᴍʏ ꜱᴇʀᴠᴇʀ : <a href=https://t.me/+6LwHBLWZc3IyMTU1>Click ker ke dekh lo😎😋</a>
 ├🚫 DM Encoding : Admin Only
 ├👥 Group Encoding : All Users
-├👑 Premium Benefits : No verification needed
+├👑 Premium Benefits : No verification + Custom settings in groups
 ╰───────────────⍟ """
