@@ -188,9 +188,7 @@ async def Files_Option(bot: Client, message: Message):
                 verification_link = await create_verification_link(user_id, botusername, db)
                 
                 btn = [
-                    [InlineKeyboardButton("ᴠᴇʀɪғʏ ɴᴏᴡ", url=verification_link)],
-                    [InlineKeyboardButton('ᴛᴜᴛᴏʀɪᴀʟ', url=Config.TUT_VID)]
-                ]
+                       [InlineKeyboardButton("ᴠᴇʀɪғʏ ɴᴏᴡ", url=verification_link), InlineKeyboardButton('ᴛᴜᴛᴏʀɪᴀʟ', url=Config.TUT_VID)]]
                 
                 verification_text = (
                     f"**ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ʀᴇǫᴜɪʀᴇᴅ**\n\n"
