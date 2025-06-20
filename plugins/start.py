@@ -148,7 +148,17 @@ async def Files_Option(bot: Client, message: Message):
         access_level = "👑 Premium User" if is_premium else "👤 Regular User"
         
         restriction_text = (
-            f"**ʏᴏᴜ ᴄᴀɴ'ᴛ ᴜsᴇ ᴍᴇ ɪɴ ᴅᴍ ʏᴏᴜ ᴄᴀɴ ᴜsᴇ ᴍᴇ ʜᴇʀᴇ ᴊᴏɪɴ ᴀɴᴅ ᴜsᴇ :- **")
+            f"🚫 **DM Encoding Restricted**\n\n"
+            f"**Your Access Level:** {access_level}\n"
+            f"**Current Location:** 📱 Private Chat\n\n"
+            f"**Only Admin can encode in DM.**\n"
+            f"**All other users must use groups for encoding.**\n\n"
+            f"**How to encode:**\n"
+            f"• Add me to a group\n"
+            f"• Give me admin permissions\n"
+            f"• Send your file in the group\n\n"
+            f"**Want DM access?** Only available for Bot Admin."
+        )
         
         try:
             return await SnowDev.edit(restriction_text)
@@ -190,23 +200,22 @@ async def Files_Option(bot: Client, message: Message):
                 verification_link = await create_verification_link(user_id, botusername, db)
                 
                 btn = [
-                    [InlineKeyboardButton("ᴠᴇʀɪғʏ ɴᴏᴡ", url=verification_link)],
-                    [InlineKeyboardButton('ᴛᴜᴛᴏʀɪᴀʟ', url=Config.TUT_VID)]
+                    [InlineKeyboardButton("🔗 ᴠᴇʀɪғʏ ɴᴏᴡ", url=verification_link)],
+                    [InlineKeyboardButton('📺 ᴛᴜᴛᴏʀɪᴀʟ', url=Config.TUT_VID)]
                 ]
                 
                 verification_text = (
-    f"🔒 **ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ʀᴇǫᴜɪʀᴇᴅ**\n\n"
-    f"ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪғʏ ʏᴏᴜʀsᴇʟғ ʙᴇғᴏʀᴇ ᴇɴᴄᴏᴅɪɴɢ ᴠɪᴅᴇᴏs ɪɴ ɢʀᴏᴜᴘs.\n\n"
-    f"⏱️ **ᴛᴏᴋᴇɴ ᴠᴀʟɪᴅɪᴛʏ:** {get_exp_time(Config.VERIFY_EXPIRE)}\n\n"
-    f"**ʜᴏᴡ ᴛᴏ ᴠᴇʀɪғʏ:**\n"
-    f"1. ᴄʟɪᴄᴋ '🔗 ᴠᴇʀɪғʏ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ\n"
-    f"2. ᴄᴏᴍᴘʟᴇᴛᴇ ᴛʜᴇ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ᴘʀᴏᴄᴇss\n"
-    f"3. ʀᴇᴛᴜʀɴ ᴛᴏ ʙᴏᴛ ᴀɴᴅ sᴇɴᴅ /start\n"
-    f"4. sᴇɴᴅ ʏᴏᴜʀ ғɪʟᴇ ᴀɢᴀɪɴ\n\n"
-    f"**ɴᴏᴛᴇ:** ᴛʜɪs ʜᴇʟᴘs sᴜᴘᴘᴏʀᴛ ᴛʜᴇ ʙᴏᴛ ᴛʜʀᴏᴜɢʜ ᴀᴅs.\n\n"
-    f"💡 **ɢᴇᴛ ᴘʀᴇᴍɪᴜᴍ ᴛᴏ sᴋɪᴘ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ!**"
-)
-
+                    f"🔒 **Verification Required**\n\n"
+                    f"You need to verify yourself before encoding videos in groups.\n\n"
+                    f"⏱️ **Token Validity:** {get_exp_time(Config.VERIFY_EXPIRE)}\n\n"
+                    f"**How to verify:**\n"
+                    f"1. Click '🔗 ᴠᴇʀɪғʏ ɴᴏᴡ' button\n"
+                    f"2. Complete the verification process\n"
+                    f"3. Return to bot and send /start\n"
+                    f"4. Send your file again\n\n"
+                    f"**Note:** This helps support the bot through ads.\n\n"
+                    f"💡 **Get premium to skip verification!**"
+                )
                 
                 try:
                     return await SnowDev.edit(
@@ -224,22 +233,22 @@ async def Files_Option(bot: Client, message: Message):
                         except MessageNotModified:
                             return
                 except Exception as e:
-    print(f"❌ ᴇʀʀᴏʀ ᴇᴅɪᴛɪɴɢ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ᴍᴇssᴀɢᴇ: {e}")
-    return
-except Exception as e:
-    print(f"❌ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ʟɪɴᴋ ᴄʀᴇᴀᴛɪᴏɴ ғᴀɪʟᴇᴅ: {e}")
-    try:
-        return await SnowDev.edit("❌ ғᴀɪʟᴇᴅ ᴛᴏ ᴄʀᴇᴀᴛᴇ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ʟɪɴᴋ. ᴘʟᴇᴀsᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.")
-    except (FloodWait, MessageNotModified) as e:
-        if isinstance(e, FloodWait):
-            await asyncio.sleep(e.value)
-            try:
-                return await SnowDev.edit("❌ ғᴀɪʟᴇᴅ ᴛᴏ ᴄʀᴇᴀᴛᴇ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ʟɪɴᴋ. ᴘʟᴇᴀsᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.")
-            except MessageNotModified:
-                return
-    except Exception as e:
-        print(f"❌ ᴇʀʀᴏʀ ᴇᴅɪᴛɪɴɢ ᴇʀʀᴏʀ ᴍᴇssᴀɢᴇ: {e}")
-        return
+                    print(f"Error editing verification message: {e}")
+                    return
+            except Exception as e:
+                print(f"Verification link creation failed: {e}")
+                try:
+                    return await SnowDev.edit("❌ Failed to create verification link. Please try again later.")
+                except (FloodWait, MessageNotModified) as e:
+                    if isinstance(e, FloodWait):
+                        await asyncio.sleep(e.value)
+                        try:
+                            return await SnowDev.edit("❌ Failed to create verification link. Please try again later.")
+                        except MessageNotModified:
+                            return
+                except Exception as e:
+                    print(f"Error editing error message: {e}")
+                    return
         
     file = getattr(message, message.media.value)
     filename = file.file_name
@@ -247,23 +256,22 @@ except Exception as e:
     
     # Enhanced access level display
     if is_admin:
-    access_level = "ᴀᴅᴍɪɴ (ғᴜʟʟ ᴀᴄᴄᴇss)"
-elif is_premium:
-    access_level = "ᴘʀᴇᴍɪᴜᴍ (ɴᴏ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ)"
-else:
-    access_level = "ʀᴇɢᴜʟᴀʀ (ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ʀᴇǫᴜɪʀᴇᴅ)"        
-    location = "💬 ɢʀᴏᴜᴘ ᴄʜᴀᴛ" if is_in_group else "📱 ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ"
+        access_level = "👨‍💼 Admin (Full Access)"
+    elif is_premium:
+        access_level = "👑 Premium (No Verification)"
+    else:
+        access_level = "👤 Regular (Verification Required)"
+        
+    location = "💬 Group Chat" if is_in_group else "📱 Private Chat"
     
     try:
         # Different message format for groups vs DMs
         if is_in_group:
-            file_info = f"**ғɪʟᴇ ᴅᴇᴛᴇᴄᴛᴇᴅ & ʀᴇᴀᴅʏ ғᴏʀ ᴘʀᴏᴄᴇssɪɴɢ
-            **\n\n**ғɪʟᴇ ɴᴀᴍᴇ:** `{filename}`\n**ғɪʟᴇ sɪᴢᴇ:** `{filesize}`\n**ᴜsᴇʀ:** {message.from_user.mention}\n**ᴀᴄᴄᴇss ʟᴇᴠᴇʟ:** {access_level}\n**ʟᴏᴄᴀᴛɪᴏɴ:** {location}"
+            file_info = f"**🤖 File Detected & Ready for Processing**\n\n**📁 File Name:** `{filename}`\n**📊 File Size:** `{filesize}`\n\n**👤 User:** {message.from_user.mention}\n**🏷️ Access Level:** {access_level}\n**📍 Location:** {location}"
         else:
-            file_info = f"**ғɪʟᴇ ɪɴғᴏʀᴍᴀᴛɪᴏɴ**\n\n**ғɪʟᴇ ɴᴀᴍᴇ:** `{filename}`\n**ғɪʟᴇ sɪᴢᴇ:** `{filesize}`\n**ᴀᴄᴄᴇss ʟᴇᴠᴇʟ:** {access_level}\n**ʟᴏᴄᴀᴛɪᴏɴ:** {location}"
+            file_info = f"**📁 File Information**\n\n**File Name:** `{filename}`\n**File Size:** `{filesize}`\n\n**👤 Access Level:** {access_level}\n**📍 Location:** {location}"
         
-        btn = [[InlineKeyboardButton("ᴡʜᴀᴛ ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴏ ᴡɪᴛʜ ᴛʜɪs ғɪʟᴇ?
-        ", callback_data="option")]]
+        btn = [[InlineKeyboardButton("📂 What do you want to do with this file?", callback_data="option")]]
         
         try:
             await SnowDev.edit(text=file_info, reply_markup=InlineKeyboardMarkup(btn))
@@ -275,18 +283,17 @@ else:
                 except MessageNotModified:
                     pass
         except Exception as e:
-            print(f"ᴇʀʀᴏʀ ᴇᴅɪᴛɪɴɢ ғɪʟᴇ ɪɴғᴏ ᴍᴇssᴀɢᴇ:
-            {e}")
+            print(f"Error editing file info message: {e}")
 
     except Exception as e:
         print(f"Error in Files_Option: {e}")
         try:
-            await SnowDev.edit("ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ ᴡʜɪʟᴇ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ғɪʟᴇ.")
+            await SnowDev.edit("❌ An error occurred while processing your file.")
         except (FloodWait, MessageNotModified) as e:
             if isinstance(e, FloodWait):
                 await asyncio.sleep(e.value)
                 try:
-                    await SnowDev.edit("ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ ᴡʜɪʟᴇ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ғɪʟᴇ.")
+                    await SnowDev.edit("❌ An error occurred while processing your file.")
                 except MessageNotModified:
                     pass
         except Exception as e:
