@@ -2,7 +2,6 @@ import asyncio
 from pyrogram import Client, filters, enums
 from pyrogram.enums import MessageMediaType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ForceReply
-from pyrogram.errors import FloodWait
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
@@ -71,36 +70,10 @@ async def doc(bot, update):
     print(file_path)
 
     ms = await update.message.edit("**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴛʀʏɪɴɢ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ....**")
-    
-    # Enhanced download with FloodWait handling
-    max_retries = 3
-    retry_count = 0
-    dl = None
-    
-    while retry_count < max_retries and dl is None:
-        try:
-            dl = await bot.download_media(
-                message=file, 
-                file_name=file_path, 
-                progress=progress_for_pyrogram, 
-                progress_args=("\n**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n\n**ᴅᴏᴡɴʟᴏᴀᴅ sᴛᴀʀᴛᴇᴅ....**", ms, time.time())
-            )
-            break  # Success, exit retry loop
-            
-        except FloodWait as e:
-            print(f"FloodWait during download: Sleeping for {e.value} seconds")
-            await asyncio.sleep(e.value)
-            retry_count += 1
-            
-        except Exception as e:
-            print(f"Download error (attempt {retry_count + 1}): {e}")
-            retry_count += 1
-            if retry_count >= max_retries:
-                return await ms.edit(f"**ᴅᴏᴡɴʟᴏᴀᴅ ғᴀɪʟᴇᴅ ᴀғᴛᴇʀ {max_retries} ᴀᴛᴛᴇᴍᴘᴛs**\n\n`{str(e)}`")
-            await asyncio.sleep(2)  # Small delay before retry
-
-    if dl is None:
-        return await ms.edit("**ᴅᴏᴡɴʟᴏᴀᴅ ғᴀɪʟᴇᴅ ᴀғᴛᴇʀ ᴀʟʟ ʀᴇᴛʀɪᴇs**")
+    try:
+        dl = await bot.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("\n**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n\n**ᴅᴏᴡɴʟᴏᴀᴅ sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
+    except Exception as e:
+        return await ms.edit(e)
 
     duration = 0
     try:
@@ -125,37 +98,28 @@ async def doc(bot, update):
         caption = f"**{new_filename}**"
 
     if (media.thumbs or c_thumb):
-        try:
-            if c_thumb:
-                ph_path = await bot.download_media(c_thumb)
-            else:
-                ph_path = await bot.download_media(media.thumbs[0].file_id)
-            Image.open(ph_path).convert("RGB").save(ph_path)
-            img = Image.open(ph_path)
-            img.resize((320, 320))
-            img.save(ph_path, "JPEG")
-        except Exception as e:
-            print(f"Thumbnail processing error: {e}")
+        if c_thumb:
+            ph_path = await bot.download_media(c_thumb)
+        else:
+            ph_path = await bot.download_media(media.thumbs[0].file_id)
+        Image.open(ph_path).convert("RGB").save(ph_path)
+        img = Image.open(ph_path)
+        img.resize((320, 320))
+        img.save(ph_path, "JPEG")
 
-    try:
-        await ms.edit("**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ғᴇᴛᴄʜɪɴɢ ᴍᴇᴛᴀᴅᴀᴛᴀ....**")
-    except FloodWait as e:
-        await asyncio.sleep(e.value)
-    
+    await ms.edit("**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ғᴇᴛᴄʜɪɴɢ ᴍᴇᴛᴀᴅᴀᴛᴀ....**")
     metadat = await db.get_metadata(user_id)
     
     if metadat:
-        try:
-            await ms.edit("ɪ ғᴏᴜɴᴅ ʏᴏᴜʀ ᴍᴇᴛᴀᴅᴀᴛᴀ\n\n**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴀᴅᴅɪɴɢ ᴍᴇᴛᴀᴅᴀᴛᴀ ᴛᴏ ғɪʟᴇ....**")
-        except FloodWait as e:
-            await asyncio.sleep(e.value)
-            
+        
+        await ms.edit("ɪ ғᴏᴜɴᴅ ʏᴏᴜʀ ᴍᴇᴛᴀᴅᴀᴛᴀ\n\n**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴀᴅᴅɪɴɢ ᴍᴇᴛᴀᴅᴀᴛᴀ ᴛᴏ ғɪʟᴇ....**")
         cmd = f"""ffmpeg -i "{dl}" {metadat} "{metadata_path}" """
 
         process = await asyncio.create_subprocess_shell(
             cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
         )
             
+
         stdout, stderr = await process.communicate()
         er = stderr.decode()
 
@@ -165,82 +129,47 @@ async def doc(bot, update):
         except BaseException:
             pass
 
-    try:
-        await ms.edit("ᴍᴇᴛᴀᴅᴀᴛᴀ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ ғɪʟᴇ sᴜᴄᴄᴇssғᴜʟʟʏ\n\n**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴛʀʏɪɴɢ ᴛᴏ ᴜᴘʟᴏᴀᴅɪɴɢ....**")
-    except FloodWait as e:
-        await asyncio.sleep(e.value)
-    except Exception as e:
-        print(f"Edit message error: {e}")
-        
+    await ms.edit("ᴍᴇᴛᴀᴅᴀᴛᴀ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ ғɪʟᴇ sᴜᴄᴄᴇssғᴜʟʟʏ\n\n**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴛʀʏɪɴɢ ᴛᴏ ᴜᴘʟᴏᴀᴅɪɴɢ....**")
     type = update.data.split("_")[1]
-    
-    # Enhanced upload with FloodWait handling
-    upload_attempts = 3
-    upload_retry = 0
-    upload_success = False
-    
-    while upload_retry < upload_attempts and not upload_success:
-        try:
-            if type == "document":
-                await bot.send_document(
-                    update.from_user.id,
-                    document=metadata_path,
-                    thumb=ph_path,
-                    caption=caption,
-                    progress=progress_for_pyrogram,
-                    progress_args=("**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴜᴘʟᴏᴀᴅ sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
-            elif type == "video":
-                await bot.send_video(
-                    update.from_user.id,
-                    video=metadata_path,
-                    caption=caption,
-                    thumb=ph_path,
-                    duration=duration,
-                    progress=progress_for_pyrogram,
-                    progress_args=("**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴜᴘʟᴏᴀᴅ sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
-            elif type == "audio":
-                await bot.send_audio(
-                    update.from_user.id,
-                    audio=metadata_path,
-                    caption=caption,
-                    thumb=ph_path,
-                    duration=duration,
-                    progress=progress_for_pyrogram,
-                    progress_args=("**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴜᴘʟᴏᴀᴅ sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
-            
-            upload_success = True
-            
-        except FloodWait as e:
-            print(f"FloodWait during upload: Sleeping for {e.value} seconds")
-            await asyncio.sleep(e.value)
-            upload_retry += 1
-            
-        except Exception as e:
-            print(f"Upload error (attempt {upload_retry + 1}): {e}")
-            upload_retry += 1
-            if upload_retry >= upload_attempts:
-                try:
-                    await ms.edit(f"**ᴜᴘʟᴏᴀᴅ ғᴀɪʟᴇᴅ ᴀғᴛᴇʀ {upload_attempts} ᴀᴛᴛᴇᴍᴘᴛs**\n\n`{str(e)}`")
-                except:
-                    pass
-                break
-            await asyncio.sleep(2)  # Small delay before retry
-
-    if upload_success:
-        try:
-            await ms.edit("**ᴜᴘʟᴏᴀᴅᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ ✅**")
-        except FloodWait as e:
-            await asyncio.sleep(e.value)
-        except Exception as e:
-            print(f"Final message edit error: {e}")
-
-    # Cleanup
     try:
-        if os.path.exists(dl):
-            os.remove(dl)
-        if os.path.exists(metadata_path):
+        if type == "document":
+            await bot.send_document(
+                update.from_user.id,
+                document=metadata_path,
+                thumb=ph_path,
+                caption=caption,
+                progress=progress_for_pyrogram,
+                progress_args=("**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴜᴘʟᴏᴀᴅ sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
+        elif type == "video":
+            await bot.send_video(
+                update.from_user.id,
+                video=metadata_path,
+                caption=caption,
+                thumb=ph_path,
+                duration=duration,
+                progress=progress_for_pyrogram,
+                progress_args=("**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴜᴘʟᴏᴀᴅ sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
+        elif type == "audio":
+            await bot.send_audio(
+                update.from_user.id,
+                audio=metadata_path,
+                caption=caption,
+                thumb=ph_path,
+                duration=duration,
+                progress=progress_for_pyrogram,
+                progress_args=("**ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...**\n**ᴜᴘʟᴏᴀᴅ sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
+    except Exception as e:
+        os.remove(file_path)
+        if ph_path:
+            os.remove(ph_path)
             os.remove(metadata_path)
-        if ph_path and os.path.exists(ph_path):
+        return await ms.edit(f" ᴇʀʀᴏʀ {e}")
+    try:
+        os.remove(dl)
+        os.remove(metadata_path)
+        if ph_path:
             os.remove(ph_path)
     except Exception as e:
-        print(f"Cleanup error: {e}")
+        pass
+
+    await ms.delete()
