@@ -93,7 +93,7 @@ async def add_premium_user(bot: Client, message: Message):
         
         # Send success message
         success_text = (
-            f"✅ **User `{user_id}` added as a premium user for {duration_str} {unit}.**\n\n"
+            f"✅ **User `{user_id}` added as a premium user for {duration_str} {unit}.**\n"
             f"**Expiration Time:** `{expiry_str}`"
         )
         
@@ -103,12 +103,8 @@ async def add_premium_user(bot: Client, message: Message):
         try:
             await bot.send_message(
                 user_id,
-                f"🎉 **Congratulations!**\n\n"
-                f"You have been granted **Premium Access** for **{duration_str} {unit}**!\n\n"
-                f"**Benefits:**\n"
-                f"• No verification required\n"
-                f"• Direct file encoding\n"
-                f"• Priority processing\n\n"
+                f"🎉 **Congratulations! You have been granted Premium Access for {duration_str} {unit}!**\n\n"
+                f"**Benefits: 1 :- No verification required. 2 :- Direct file encoding"
                 f"**Expires:** `{expiry_str}`"
             )
         except Exception as e:
