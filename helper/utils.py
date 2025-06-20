@@ -15,39 +15,74 @@ from script import Txt
 from pyrogram import enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 
+# Progress Message Templates
+DOWNLOAD_PROGRESS = """
+**Downloading**
+
+{filename}
+
+{current} Out Of {total}
+[{progress_bar}] {percentage}%
+
+**Speed:** {speed}
+**ETA:** {eta}
+**Elapsed:** {elapsed}
+"""
+
+UPLOAD_PROGRESS = """
+**Uploading**
+
+{filename}
+
+{current} Out Of {total}
+[{progress_bar}] {percentage}%
+
+**Speed:** {speed}
+**ETA:** {eta}
+**Elapsed:** {elapsed}
+"""
 
 QUEUE = []
-
-
 
 async def progress_for_pyrogram(current, total, ud_type, message, start):
     now = time.time()
     diff = now - start
-    if round(diff % 5.00) == 0 or current == total:        
+    if round(diff % 2.00) == 0 or current == total:
         percentage = current * 100 / total
         speed = current / diff
-        elapsed_time = round(diff) * 1000
-        time_to_completion = round((total - current) / speed) * 1000
-        estimated_total_time = elapsed_time + time_to_completion
-
-        elapsed_time = TimeFormatter(milliseconds=elapsed_time)
-        estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
-
-        progress = "{0}{1}".format(
-            ''.join(["⬢" for i in range(math.floor(percentage / 5))]),
-            ''.join(["⬡" for i in range(20 - math.floor(percentage / 5))])
-        )            
-        tmp = progress + Txt.PROGRESS_BAR.format( 
-            round(percentage, 2),
-            humanbytes(current),
-            humanbytes(total),
-            humanbytes(speed),            
-            estimated_total_time if estimated_total_time != '' else "0 s"
+        elapsed_time = round(diff)
+        time_to_completion = round((total - current) / speed) if speed > 0 else 0
+        
+        # Create progress bar with 20 segments
+        filled_length = int(percentage / 5)
+        progress_bar = "●" * filled_length + "○" * (20 - filled_length)
+        
+        # Determine operation type and template
+        if "download" in ud_type.lower():
+            template = DOWNLOAD_PROGRESS
+            operation = "Downloading"
+        else:
+            template = UPLOAD_PROGRESS  
+            operation = "Uploading"
+        
+        # Format progress message
+        progress_text = template.format(
+            filename=ud_type.replace("Downloading", "").replace("Uploading", "").strip(),
+            current=humanbytes(current),
+            total=humanbytes(total),
+            progress_bar=progress_bar,
+            percentage=f"{percentage:.2f}",
+            speed=f"{humanbytes(speed)}/s",
+            eta=f"{time_to_completion}s",
+            elapsed=f"{elapsed_time}s"
         )
+        
         try:
             await message.edit(
-                text=f"{ud_type}\n\n{tmp}",               
-                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("✖️ 𝙲𝙰𝙽𝙲𝙴𝙻 ✖️", callback_data=f"close-{message.from_user.id}")]])                                               
+                text=progress_text,
+                reply_markup=InlineKeyboardMarkup([[
+                    InlineKeyboardButton("✖️ 𝙲𝙰𝙽𝙲𝙴𝙻 ✖️", callback_data=f"close-{message.from_user.id}")
+                ]])
             )
         except:
             pass
@@ -113,16 +148,12 @@ async def send_log(b, u):
 
 def Filename(filename, mime_type):
     if filename.split('.')[-1] in ['mkv', 'mp4', 'mp3', 'mov']:
-
         return filename
-
     else:
         if mime_type.split('/')[1] in ['pdf', 'mkv', 'mp4', 'mp3']:
             return f"{filename}.{mime_type.split('/')[1]}"
-        
         elif mime_type.split('/')[0] == "audio":
             return f"{filename}.mp3"
-
         else:
             return f"{filename}.mkv"
             
@@ -138,8 +169,6 @@ async def CANT_CONFIG_GROUP_MSG(client, message):
 
 
 async def Compress_Stats(e, userid):
-
-
     if int(userid) not in [e.from_user.id, 0]:
         return await e.answer(f"⚠️ Hᴇʏ {e.from_user.first_name}\nYᴏᴜ ᴄᴀɴ'ᴛ sᴇᴇ sᴛᴀᴛᴜs ᴀs ᴛʜɪs ɪs ɴᴏᴛ ʏᴏᴜʀ ғɪʟᴇ", show_alert=True)
     
@@ -158,7 +187,6 @@ async def Compress_Stats(e, userid):
         )
 
 async def skip(e, userid):
-
     if int(userid) not in [e.from_user.id, 0]:
         return await e.answer(f"⚠️ Hᴇʏ {e.from_user.first_name}\nYᴏᴜ ᴄᴀɴ'ᴛ ᴄᴀɴᴄᴇʟ ᴛʜᴇ ᴘʀᴏᴄᴇss ᴀs ʏᴏᴜ ᴅɪᴅɴ'ᴛ sᴛᴀʀᴛ ɪᴛ", show_alert=True)
     try:
