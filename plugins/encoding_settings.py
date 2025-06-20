@@ -15,23 +15,23 @@ async def set_crf_480p(bot: Client, message: Message):
     
     if not await is_premium_or_admin(user_id):
         await message.reply_text(
-            "❌ **Premium Feature!**\n\n"
-            "This feature is only available for premium users and admins.\n"
-            "Contact admin to get premium access!",
+            "**ᴘʀᴇᴍɪᴜᴍ ғᴇᴀᴛᴜʀᴇ!**\n\n"
+            "ᴛʜɪs ғᴇᴀᴛᴜʀᴇ ɪs ᴏɴʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜsᴇʀs ᴀɴᴅ ᴀᴅᴍɪɴs.\n"
+            "ᴄᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ᴛᴏ ɢᴇᴛ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇss!",
             quote=True
         )
         return
     
     if len(message.command) != 2:
         current_crf = await db.get_encoding_setting(user_id, 'crf_480p')
-        chat_type = "group" if message.chat.type in ['supergroup', 'group'] else "private"
+        chat_type = "ɢʀᴏᴜᴘ" if message.chat.type in ['supergroup', 'group'] else "ᴘʀɪᴠᴀᴛᴇ"
         await message.reply_text(
-            f"**Current 480p CRF:** `{current_crf}`\n\n"
-            f"**Usage:** `/crf_480p value`\n\n"
-            f"**Example:** `/crf_480p 25`\n\n"
-            f"**Range:** 0-51 (lower = better quality, higher file size)\n"
-            f"**Recommended:** 23-30\n\n"
-            f"**Chat Type:** {chat_type}",
+            f"**ᴄᴜʀʀᴇɴᴛ 480ᴘ ᴄʀғ:** `{current_crf}`\n\n"
+            f"**ᴜsᴀɢᴇ:** `/crf_480p ᴠᴀʟᴜᴇ`\n\n"
+            f"**ᴇxᴀᴍᴘʟᴇ:** `/crf_480p 25`\n\n"
+            f"**ʀᴀɴɢᴇ:** 0-51 (ʟᴏᴡᴇʀ = ʙᴇᴛᴛᴇʀ ǫᴜᴀʟɪᴛʏ, ʜɪɢʜᴇʀ ғɪʟᴇ sɪᴢᴇ)\n"
+            f"**ʀᴇᴄᴏᴍᴍᴇɴᴅᴇᴅ:** 23-30\n\n"
+            f"**ᴄʜᴀᴛ ᴛʏᴘᴇ:** {chat_type}",
             quote=True
         )
         return
@@ -40,24 +40,24 @@ async def set_crf_480p(bot: Client, message: Message):
         crf_value = int(message.command[1])
         if not 0 <= crf_value <= 51:
             await message.reply_text(
-                "❌ **Invalid CRF value!**\n\n"
-                "CRF must be between 0-51",
+                "**ɪɴᴠᴀʟɪᴅ ᴄʀғ ᴠᴀʟᴜᴇ!**\n\n"
+                "ᴄʀғ ᴍᴜsᴛ ʙᴇ ʙᴇᴛᴡᴇᴇɴ 0-51",
                 quote=True
             )
             return
         
         await db.set_encoding_settings(user_id, 'crf_480p', crf_value)
-        chat_info = f" in {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
+        chat_info = f" ɪɴ {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
         await message.reply_text(
-            f"✅ **480p CRF set to:** `{crf_value}`{chat_info}\n\n"
-            f"This will be used for all your 480p compressions.",
+            f"**480ᴘ ᴄʀғ sᴇᴛ ᴛᴏ:** `{crf_value}`{chat_info}\n\n"
+            f"ᴛʜɪs ᴡɪʟʟ ʙᴇ ᴜsᴇᴅ ғᴏʀ ᴀʟʟ ʏᴏᴜʀ 480ᴘ ᴄᴏᴍᴘʀᴇssɪᴏɴs.",
             quote=True
         )
         
     except ValueError:
         await message.reply_text(
-            "❌ **Invalid value!**\n\n"
-            "Please provide a numeric CRF value (0-51)",
+            "**ɪɴᴠᴀʟɪᴅ ᴠᴀʟᴜᴇ!**\n\n"
+            "ᴘʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ɴᴜᴍᴇʀɪᴄ ᴄʀғ ᴠᴀʟᴜᴇ (0-51)",
             quote=True
         )
 
@@ -67,23 +67,23 @@ async def set_crf_720p(bot: Client, message: Message):
     
     if not await is_premium_or_admin(user_id):
         await message.reply_text(
-            "❌ **Premium Feature!**\n\n"
-            "This feature is only available for premium users and admins.\n"
-            "Contact admin to get premium access!",
+            "**ᴘʀᴇᴍɪᴜᴍ ғᴇᴀᴛᴜʀᴇ!**\n\n"
+            "ᴛʜɪs ғᴇᴀᴛᴜʀᴇ ɪs ᴏɴʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜsᴇʀs ᴀɴᴅ ᴀᴅᴍɪɴs.\n"
+            "ᴄᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ᴛᴏ ɢᴇᴛ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇss!",
             quote=True
         )
         return
     
     if len(message.command) != 2:
         current_crf = await db.get_encoding_setting(user_id, 'crf_720p')
-        chat_type = "group" if message.chat.type in ['supergroup', 'group'] else "private"
+        chat_type = "ɢʀᴏᴜᴘ" if message.chat.type in ['supergroup', 'group'] else "ᴘʀɪᴠᴀᴛᴇ"
         await message.reply_text(
-            f"**Current 720p CRF:** `{current_crf}`\n\n"
-            f"**Usage:** `/crf_720p value`\n\n"
-            f"**Example:** `/crf_720p 24`\n\n"
-            f"**Range:** 0-51 (lower = better quality, higher file size)\n"
-            f"**Recommended:** 23-28\n\n"
-            f"**Chat Type:** {chat_type}",
+            f"**ᴄᴜʀʀᴇɴᴛ 720ᴘ ᴄʀғ:** `{current_crf}`\n\n"
+            f"**ᴜsᴀɢᴇ:** `/crf_720p ᴠᴀʟᴜᴇ`\n\n"
+            f"**ᴇxᴀᴍᴘʟᴇ:** `/crf_720p 24`\n\n"
+            f"**ʀᴀɴɢᴇ:** 0-51 (ʟᴏᴡᴇʀ = ʙᴇᴛᴛᴇʀ ǫᴜᴀʟɪᴛʏ, ʜɪɢʜᴇʀ ғɪʟᴇ sɪᴢᴇ)\n"
+            f"**ʀᴇᴄᴏᴍᴍᴇɴᴅᴇᴅ:** 23-28\n\n"
+            f"**ᴄʜᴀᴛ ᴛʏᴘᴇ:** {chat_type}",
             quote=True
         )
         return
@@ -92,24 +92,24 @@ async def set_crf_720p(bot: Client, message: Message):
         crf_value = int(message.command[1])
         if not 0 <= crf_value <= 51:
             await message.reply_text(
-                "❌ **Invalid CRF value!**\n\n"
-                "CRF must be between 0-51",
+                "**ɪɴᴠᴀʟɪᴅ ᴄʀғ ᴠᴀʟᴜᴇ!**\n\n"
+                "ᴄʀғ ᴍᴜsᴛ ʙᴇ ʙᴇᴛᴡᴇᴇɴ 0-51",
                 quote=True
             )
             return
         
         await db.set_encoding_settings(user_id, 'crf_720p', crf_value)
-        chat_info = f" in {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
+        chat_info = f" ɪɴ {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
         await message.reply_text(
-            f"✅ **720p CRF set to:** `{crf_value}`{chat_info}\n\n"
-            f"This will be used for all your 720p compressions.",
+            f"**720ᴘ ᴄʀғ sᴇᴛ ᴛᴏ:** `{crf_value}`{chat_info}\n\n"
+            f"ᴛʜɪs ᴡɪʟʟ ʙᴇ ᴜsᴇᴅ ғᴏʀ ᴀʟʟ ʏᴏᴜʀ 720ᴘ ᴄᴏᴍᴘʀᴇssɪᴏɴs.",
             quote=True
         )
         
     except ValueError:
         await message.reply_text(
-            "❌ **Invalid value!**\n\n"
-            "Please provide a numeric CRF value (0-51)",
+            "**ɪɴᴠᴀʟɪᴅ ᴠᴀʟᴜᴇ!**\n\n"
+            "ᴘʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ɴᴜᴍᴇʀɪᴄ ᴄʀғ ᴠᴀʟᴜᴇ (0-51)",
             quote=True
         )
 
@@ -119,23 +119,23 @@ async def set_crf_1080p(bot: Client, message: Message):
     
     if not await is_premium_or_admin(user_id):
         await message.reply_text(
-            "❌ **Premium Feature!**\n\n"
-            "This feature is only available for premium users and admins.\n"
-            "Contact admin to get premium access!",
+            "**ᴘʀᴇᴍɪᴜᴍ ғᴇᴀᴛᴜʀᴇ!**\n\n"
+            "ᴛʜɪs ғᴇᴀᴛᴜʀᴇ ɪs ᴏɴʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜsᴇʀs ᴀɴᴅ ᴀᴅᴍɪɴs.\n"
+            "ᴄᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ᴛᴏ ɢᴇᴛ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇss!",
             quote=True
         )
         return
     
     if len(message.command) != 2:
         current_crf = await db.get_encoding_setting(user_id, 'crf_1080p')
-        chat_type = "group" if message.chat.type in ['supergroup', 'group'] else "private"
+        chat_type = "ɢʀᴏᴜᴘ" if message.chat.type in ['supergroup', 'group'] else "ᴘʀɪᴠᴀᴛᴇ"
         await message.reply_text(
-            f"**Current 1080p CRF:** `{current_crf}`\n\n"
-            f"**Usage:** `/crf_1080p value`\n\n"
-            f"**Example:** `/crf_1080p 22`\n\n"
-            f"**Range:** 0-51 (lower = better quality, higher file size)\n"
-            f"**Recommended:** 20-26\n\n"
-            f"**Chat Type:** {chat_type}",
+            f"**ᴄᴜʀʀᴇɴᴛ 1080ᴘ ᴄʀғ:** `{current_crf}`\n\n"
+            f"**ᴜsᴀɢᴇ:** `/crf_1080p ᴠᴀʟᴜᴇ`\n\n"
+            f"**ᴇxᴀᴍᴘʟᴇ:** `/crf_1080p 22`\n\n"
+            f"**ʀᴀɴɢᴇ:** 0-51 (ʟᴏᴡᴇʀ = ʙᴇᴛᴛᴇʀ ǫᴜᴀʟɪᴛʏ, ʜɪɢʜᴇʀ ғɪʟᴇ sɪᴢᴇ)\n"
+            f"**ʀᴇᴄᴏᴍᴍᴇɴᴅᴇᴅ:** 20-26\n\n"
+            f"**ᴄʜᴀᴛ ᴛʏᴘᴇ:** {chat_type}",
             quote=True
         )
         return
@@ -144,24 +144,24 @@ async def set_crf_1080p(bot: Client, message: Message):
         crf_value = int(message.command[1])
         if not 0 <= crf_value <= 51:
             await message.reply_text(
-                "❌ **Invalid CRF value!**\n\n"
-                "CRF must be between 0-51",
+                "**ɪɴᴠᴀʟɪᴅ ᴄʀғ ᴠᴀʟᴜᴇ!**\n\n"
+                "ᴄʀғ ᴍᴜsᴛ ʙᴇ ʙᴇᴛᴡᴇᴇɴ 0-51",
                 quote=True
             )
             return
         
         await db.set_encoding_settings(user_id, 'crf_1080p', crf_value)
-        chat_info = f" in {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
+        chat_info = f" ɪɴ {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
         await message.reply_text(
-            f"✅ **1080p CRF set to:** `{crf_value}`{chat_info}\n\n"
-            f"This will be used for all your 1080p compressions.",
+            f"**1080ᴘ ᴄʀғ sᴇᴛ ᴛᴏ:** `{crf_value}`{chat_info}\n\n"
+            f"ᴛʜɪs ᴡɪʟʟ ʙᴇ ᴜsᴇᴅ ғᴏʀ ᴀʟʟ ʏᴏᴜʀ 1080ᴘ ᴄᴏᴍᴘʀᴇssɪᴏɴs.",
             quote=True
         )
         
     except ValueError:
         await message.reply_text(
-            "❌ **Invalid value!**\n\n"
-            "Please provide a numeric CRF value (0-51)",
+            "**ɪɴᴠᴀʟɪᴅ ᴠᴀʟᴜᴇ!**\n\n"
+            "ᴘʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ɴᴜᴍᴇʀɪᴄ ᴄʀғ ᴠᴀʟᴜᴇ (0-51)",
             quote=True
         )
 
@@ -171,23 +171,23 @@ async def set_crf_4k(bot: Client, message: Message):
     
     if not await is_premium_or_admin(user_id):
         await message.reply_text(
-            "❌ **Premium Feature!**\n\n"
-            "This feature is only available for premium users and admins.\n"
-            "Contact admin to get premium access!",
+            "**ᴘʀᴇᴍɪᴜᴍ ғᴇᴀᴛᴜʀᴇ!**\n\n"
+            "ᴛʜɪs ғᴇᴀᴛᴜʀᴇ ɪs ᴏɴʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜsᴇʀs ᴀɴᴅ ᴀᴅᴍɪɴs.\n"
+            "ᴄᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ᴛᴏ ɢᴇᴛ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇss!",
             quote=True
         )
         return
     
     if len(message.command) != 2:
         current_crf = await db.get_encoding_setting(user_id, 'crf_4k')
-        chat_type = "group" if message.chat.type in ['supergroup', 'group'] else "private"
+        chat_type = "ɢʀᴏᴜᴘ" if message.chat.type in ['supergroup', 'group'] else "ᴘʀɪᴠᴀᴛᴇ"
         await message.reply_text(
-            f"**Current 4K CRF:** `{current_crf}`\n\n"
-            f"**Usage:** `/crf_4k value`\n\n"
-            f"**Example:** `/crf_4k 18`\n\n"
-            f"**Range:** 0-51 (lower = better quality, higher file size)\n"
-            f"**Recommended:** 18-24\n\n"
-            f"**Chat Type:** {chat_type}",
+            f"**ᴄᴜʀʀᴇɴᴛ 4ᴋ ᴄʀғ:** `{current_crf}`\n\n"
+            f"**ᴜsᴀɢᴇ:** `/crf_4k ᴠᴀʟᴜᴇ`\n\n"
+            f"**ᴇxᴀᴍᴘʟᴇ:** `/crf_4k 18`\n\n"
+            f"**ʀᴀɴɢᴇ:** 0-51 (ʟᴏᴡᴇʀ = ʙᴇᴛᴛᴇʀ ǫᴜᴀʟɪᴛʏ, ʜɪɢʜᴇʀ ғɪʟᴇ sɪᴢᴇ)\n"
+            f"**ʀᴇᴄᴏᴍᴍᴇɴᴅᴇᴅ:** 18-24\n\n"
+            f"**ᴄʜᴀᴛ ᴛʏᴘᴇ:** {chat_type}",
             quote=True
         )
         return
@@ -196,24 +196,24 @@ async def set_crf_4k(bot: Client, message: Message):
         crf_value = int(message.command[1])
         if not 0 <= crf_value <= 51:
             await message.reply_text(
-                "❌ **Invalid CRF value!**\n\n"
-                "CRF must be between 0-51",
+                "**ɪɴᴠᴀʟɪᴅ ᴄʀғ ᴠᴀʟᴜᴇ!**\n\n"
+                "ᴄʀғ ᴍᴜsᴛ ʙᴇ ʙᴇᴛᴡᴇᴇɴ 0-51",
                 quote=True
             )
             return
         
         await db.set_encoding_settings(user_id, 'crf_4k', crf_value)
-        chat_info = f" in {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
+        chat_info = f" ɪɴ {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
         await message.reply_text(
-            f"✅ **4K CRF set to:** `{crf_value}`{chat_info}\n\n"
-            f"This will be used for all your 4K compressions.",
+            f"**4ᴋ ᴄʀғ sᴇᴛ ᴛᴏ:** `{crf_value}`{chat_info}\n\n"
+            f"ᴛʜɪs ᴡɪʟʟ ʙᴇ ᴜsᴇᴅ ғᴏʀ ᴀʟʟ ʏᴏᴜʀ 4ᴋ ᴄᴏᴍᴘʀᴇssɪᴏɴs.",
             quote=True
         )
         
     except ValueError:
         await message.reply_text(
-            "❌ **Invalid value!**\n\n"
-            "Please provide a numeric CRF value (0-51)",
+            "**ɪɴᴠᴀʟɪᴅ ᴠᴀʟᴜᴇ!**\n\n"
+            "ᴘʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ɴᴜᴍᴇʀɪᴄ ᴄʀғ ᴠᴀʟᴜᴇ (0-51)",
             quote=True
         )
 
@@ -223,24 +223,24 @@ async def set_vcodec(bot: Client, message: Message):
     
     if not await is_premium_or_admin(user_id):
         await message.reply_text(
-            "❌ **Premium Feature!**\n\n"
-            "This feature is only available for premium users and admins.\n"
-            "Contact admin to get premium access!",
+            "**ᴘʀᴇᴍɪᴜᴍ ғᴇᴀᴛᴜʀᴇ!**\n\n"
+            "ᴛʜɪs ғᴇᴀᴛᴜʀᴇ ɪs ᴏɴʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜsᴇʀs ᴀɴᴅ ᴀᴅᴍɪɴs.\n"
+            "ᴄᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ᴛᴏ ɢᴇᴛ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇss!",
             quote=True
         )
         return
     
     if len(message.command) != 2:
         current_vcodec = await db.get_encoding_setting(user_id, 'vcodec')
-        chat_type = "group" if message.chat.type in ['supergroup', 'group'] else "private"
+        chat_type = "ɢʀᴏᴜᴘ" if message.chat.type in ['supergroup', 'group'] else "ᴘʀɪᴠᴀᴛᴇ"
         await message.reply_text(
-            f"**Current Video Codec:** `{current_vcodec}`\n\n"
-            f"**Usage:** `/vcodec codec_name`\n\n"
-            f"**Examples:**\n"
-            f"• `/vcodec libx264` - H.264 (most compatible)\n"
-            f"• `/vcodec libx265` - H.265 (better compression)\n"
-            f"• `/vcodec libvpx-vp9` - VP9\n\n"
-            f"**Chat Type:** {chat_type}",
+            f"**ᴄᴜʀʀᴇɴᴛ ᴠɪᴅᴇᴏ ᴄᴏᴅᴇᴄ:** `{current_vcodec}`\n\n"
+            f"**ᴜsᴀɢᴇ:** `/vcodec ᴄᴏᴅᴇᴄ_ɴᴀᴍᴇ`\n\n"
+            f"**ᴇxᴀᴍᴘʟᴇs:**\n"
+            f"• `/vcodec libx264` - ʜ.264 (ᴍᴏsᴛ ᴄᴏᴍᴘᴀᴛɪʙʟᴇ)\n"
+            f"• `/vcodec libx265` - ʜ.265 (ʙᴇᴛᴛᴇʀ ᴄᴏᴍᴘʀᴇssɪᴏɴ)\n"
+            f"• `/vcodec libvpx-vp9` - ᴠᴘ9\n\n"
+            f"**ᴄʜᴀᴛ ᴛʏᴘᴇ:** {chat_type}",
             quote=True
         )
         return
@@ -250,24 +250,24 @@ async def set_vcodec(bot: Client, message: Message):
     
     if codec not in valid_codecs:
         await message.reply_text(
-            f"❌ **Invalid codec!**\n\n"
-            f"**Supported codecs:**\n"
-            f"• `libx264` - H.264 (most compatible)\n"
-            f"• `libx265` - H.265 (better compression)\n"
-            f"• `libvpx-vp9` - VP9\n"
-            f"• `libvpx` - VP8\n"
-            f"• `libav1` - AV1\n"
-            f"• `h264_nvenc` - NVIDIA H.264\n"
-            f"• `hevc_nvenc` - NVIDIA H.265",
+            f"**ɪɴᴠᴀʟɪᴅ ᴄᴏᴅᴇᴄ!**\n\n"
+            f"**sᴜᴘᴘᴏʀᴛᴇᴅ ᴄᴏᴅᴇᴄs:**\n"
+            f"• `libx264` - ʜ.264 (ᴍᴏsᴛ ᴄᴏᴍᴘᴀᴛɪʙʟᴇ)\n"
+            f"• `libx265` - ʜ.265 (ʙᴇᴛᴛᴇʀ ᴄᴏᴍᴘʀᴇssɪᴏɴ)\n"
+            f"• `libvpx-vp9` - ᴠᴘ9\n"
+            f"• `libvpx` - ᴠᴘ8\n"
+            f"• `libav1` - ᴀᴠ1\n"
+            f"• `h264_nvenc` - ɴᴠɪᴅɪᴀ ʜ.264\n"
+            f"• `hevc_nvenc` - ɴᴠɪᴅɪᴀ ʜ.265",
             quote=True
         )
         return
     
     await db.set_encoding_settings(user_id, 'vcodec', codec)
-    chat_info = f" in {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
+    chat_info = f" ɪɴ {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
     await message.reply_text(
-        f"✅ **Video codec set to:** `{codec}`{chat_info}\n\n"
-        f"This will be used for all your video compressions.",
+        f"**ᴠɪᴅᴇᴏ ᴄᴏᴅᴇᴄ sᴇᴛ ᴛᴏ:** `{codec}`{chat_info}\n\n"
+        f"ᴛʜɪs ᴡɪʟʟ ʙᴇ ᴜsᴇᴅ ғᴏʀ ᴀʟʟ ʏᴏᴜʀ ᴠɪᴅᴇᴏ ᴄᴏᴍᴘʀᴇssɪᴏɴs.",
         quote=True
     )
 
@@ -277,26 +277,26 @@ async def set_preset(bot: Client, message: Message):
     
     if not await is_premium_or_admin(user_id):
         await message.reply_text(
-            "❌ **Premium Feature!**\n\n"
-            "This feature is only available for premium users and admins.\n"
-            "Contact admin to get premium access!",
+            "**ᴘʀᴇᴍɪᴜᴍ ғᴇᴀᴛᴜʀᴇ!**\n\n"
+            "ᴛʜɪs ғᴇᴀᴛᴜʀᴇ ɪs ᴏɴʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜsᴇʀs ᴀɴᴅ ᴀᴅᴍɪɴs.\n"
+            "ᴄᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ᴛᴏ ɢᴇᴛ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇss!",
             quote=True
         )
         return
     
     if len(message.command) != 2:
         current_preset = await db.get_encoding_setting(user_id, 'preset')
-        chat_type = "group" if message.chat.type in ['supergroup', 'group'] else "private"
+        chat_type = "ɢʀᴏᴜᴘ" if message.chat.type in ['supergroup', 'group'] else "ᴘʀɪᴠᴀᴛᴇ"
         await message.reply_text(
-            f"**Current Preset:** `{current_preset}`\n\n"
-            f"**Usage:** `/preset preset_name`\n\n"
-            f"**Examples:**\n"
-            f"• `/preset ultrafast` - Fastest encoding\n"
-            f"• `/preset fast` - Fast encoding\n"
-            f"• `/preset medium` - Balanced\n"
-            f"• `/preset slow` - Better quality\n"
-            f"• `/preset veryslow` - Best quality\n\n"
-            f"**Chat Type:** {chat_type}",
+            f"**ᴄᴜʀʀᴇɴᴛ ᴘʀᴇsᴇᴛ:** `{current_preset}`\n\n"
+            f"**ᴜsᴀɢᴇ:** `/preset ᴘʀᴇsᴇᴛ_ɴᴀᴍᴇ`\n\n"
+            f"**ᴇxᴀᴍᴘʟᴇs:**\n"
+            f"• `/preset ultrafast` - ғᴀsᴛᴇsᴛ ᴇɴᴄᴏᴅɪɴɢ\n"
+            f"• `/preset fast` - ғᴀsᴛ ᴇɴᴄᴏᴅɪɴɢ\n"
+            f"• `/preset medium` - ʙᴀʟᴀɴᴄᴇᴅ\n"
+            f"• `/preset slow` - ʙᴇᴛᴛᴇʀ ǫᴜᴀʟɪᴛʏ\n"
+            f"• `/preset veryslow` - ʙᴇsᴛ ǫᴜᴀʟɪᴛʏ\n\n"
+            f"**ᴄʜᴀᴛ ᴛʏᴘᴇ:** {chat_type}",
             quote=True
         )
         return
@@ -306,26 +306,26 @@ async def set_preset(bot: Client, message: Message):
     
     if preset not in valid_presets:
         await message.reply_text(
-            f"❌ **Invalid preset!**\n\n"
-            f"**Supported presets:**\n"
-            f"• `ultrafast` - Fastest encoding\n"
-            f"• `superfast` - Very fast\n"
-            f"• `veryfast` - Fast\n"
-            f"• `faster` - Faster\n"
-            f"• `fast` - Fast\n"
-            f"• `medium` - Balanced (default)\n"
-            f"• `slow` - Better quality\n"
-            f"• `slower` - Much better quality\n"
-            f"• `veryslow` - Best quality",
+            f"**ɪɴᴠᴀʟɪᴅ ᴘʀᴇsᴇᴛ!**\n\n"
+            f"**sᴜᴘᴘᴏʀᴛᴇᴅ ᴘʀᴇsᴇᴛs:**\n"
+            f"• `ultrafast` - ғᴀsᴛᴇsᴛ ᴇɴᴄᴏᴅɪɴɢ\n"
+            f"• `superfast` - ᴠᴇʀʏ ғᴀsᴛ\n"
+            f"• `veryfast` - ғᴀsᴛ\n"
+            f"• `faster` - ғᴀsᴛᴇʀ\n"
+            f"• `fast` - ғᴀsᴛ\n"
+            f"• `medium` - ʙᴀʟᴀɴᴄᴇᴅ (ᴅᴇғᴀᴜʟᴛ)\n"
+            f"• `slow` - ʙᴇᴛᴛᴇʀ ǫᴜᴀʟɪᴛʏ\n"
+            f"• `slower` - ᴍᴜᴄʜ ʙᴇᴛᴛᴇʀ ǫᴜᴀʟɪᴛʏ\n"
+            f"• `veryslow` - ʙᴇsᴛ ǫᴜᴀʟɪᴛʏ",
             quote=True
         )
         return
     
     await db.set_encoding_settings(user_id, 'preset', preset)
-    chat_info = f" in {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
+    chat_info = f" ɪɴ {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
     await message.reply_text(
-        f"✅ **Preset set to:** `{preset}`{chat_info}\n\n"
-        f"This will be used for all your video compressions.",
+        f"**ᴘʀᴇsᴇᴛ sᴇᴛ ᴛᴏ:** `{preset}`{chat_info}\n\n"
+        f"ᴛʜɪs ᴡɪʟʟ ʙᴇ ᴜsᴇᴅ ғᴏʀ ᴀʟʟ ʏᴏᴜʀ ᴠɪᴅᴇᴏ ᴄᴏᴍᴘʀᴇssɪᴏɴs.",
         quote=True
     )
 
@@ -335,23 +335,23 @@ async def view_encoding_settings(bot: Client, message: Message):
     
     if not await is_premium_or_admin(user_id):
         await message.reply_text(
-            "❌ **Premium Feature!**\n\n"
-            "This feature is only available for premium users and admins.",
+            "**ᴘʀᴇᴍɪᴜᴍ ғᴇᴀᴛᴜʀᴇ!**\n\n"
+            "ᴛʜɪs ғᴇᴀᴛᴜʀᴇ ɪs ᴏɴʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜsᴇʀs ᴀɴᴅ ᴀᴅᴍɪɴs.",
             quote=True
         )
         return
     
     settings = await db.get_encoding_settings(user_id)
-    chat_info = f" in {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
+    chat_info = f" ɪɴ {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
     
-    settings_text = f"**Your Current Encoding Settings{chat_info}:**\n\n"
-    settings_text += f"**480p CRF:** `{settings.get('crf_480p', 28)}`\n"
-    settings_text += f"**720p CRF:** `{settings.get('crf_720p', 26)}`\n"  
-    settings_text += f"**1080p CRF:** `{settings.get('crf_1080p', 24)}`\n"
-    settings_text += f"**4K CRF:** `{settings.get('crf_4k', 22)}`\n"
-    settings_text += f"**Video Codec:** `{settings.get('vcodec', 'libx264')}`\n"
-    settings_text += f"**Preset:** `{settings.get('preset', 'veryfast')}`\n\n"
-    settings_text += "**Note:** Lower CRF = Better quality, Higher file size"
+    settings_text = f"**ʏᴏᴜʀ ᴄᴜʀʀᴇɴᴛ ᴇɴᴄᴏᴅɪɴɢ sᴇᴛᴛɪɴɢs{chat_info}:**\n\n"
+    settings_text += f"**480ᴘ ᴄʀғ:** `{settings.get('crf_480p', 28)}`\n"
+    settings_text += f"**720ᴘ ᴄʀғ:** `{settings.get('crf_720p', 26)}`\n"  
+    settings_text += f"**1080ᴘ ᴄʀғ:** `{settings.get('crf_1080p', 24)}`\n"
+    settings_text += f"**4ᴋ ᴄʀғ:** `{settings.get('crf_4k', 22)}`\n"
+    settings_text += f"**ᴠɪᴅᴇᴏ ᴄᴏᴅᴇᴄ:** `{settings.get('vcodec', 'libx264')}`\n"
+    settings_text += f"**ᴘʀᴇsᴇᴛ:** `{settings.get('preset', 'veryfast')}`\n\n"
+    settings_text += "**ɴᴏᴛᴇ:** ʟᴏᴡᴇʀ ᴄʀғ = ʙᴇᴛᴛᴇʀ ǫᴜᴀʟɪᴛʏ, ʜɪɢʜᴇʀ ғɪʟᴇ sɪᴢᴇ"
     
     await message.reply_text(settings_text, quote=True)
 
@@ -361,8 +361,8 @@ async def reset_encoding_settings(bot: Client, message: Message):
     
     if not await is_premium_or_admin(user_id):
         await message.reply_text(
-            "❌ **Premium Feature!**\n\n"
-            "This feature is only available for premium users and admins.",
+            "**ᴘʀᴇᴍɪᴜᴍ ғᴇᴀᴛᴜʀᴇ!**\n\n"
+            "ᴛʜɪs ғᴇᴀᴛᴜʀᴇ ɪs ᴏɴʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜsᴇʀs ᴀɴᴅ ᴀᴅᴍɪɴs.",
             quote=True
         )
         return
@@ -375,15 +375,15 @@ async def reset_encoding_settings(bot: Client, message: Message):
     await db.set_encoding_settings(user_id, 'vcodec', 'libx264')
     await db.set_encoding_settings(user_id, 'preset', 'veryfast')
     
-    chat_info = f" in {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
+    chat_info = f" ɪɴ {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
     await message.reply_text(
-        f"✅ **Encoding settings reset to defaults{chat_info}:**\n\n"
-        f"**480p CRF:** `28`\n"
-        f"**720p CRF:** `26`\n"
-        f"**1080p CRF:** `24`\n"
-        f"**4K CRF:** `22`\n"
-        f"**Video Codec:** `libx264`\n"
-        f"**Preset:** `veryfast`",
+        f"**ᴇɴᴄᴏᴅɪɴɢ sᴇᴛᴛɪɴɢs ʀᴇsᴇᴛ ᴛᴏ ᴅᴇғᴀᴜʟᴛs{chat_info}:**\n\n"
+        f"**480ᴘ ᴄʀғ:** `28`\n"
+        f"**720ᴘ ᴄʀғ:** `26`\n"
+        f"**1080ᴘ ᴄʀғ:** `24`\n"
+        f"**4ᴋ ᴄʀғ:** `22`\n"
+        f"**ᴠɪᴅᴇᴏ ᴄᴏᴅᴇᴄ:** `libx264`\n"
+        f"**ᴘʀᴇsᴇᴛ:** `veryfast`",
         quote=True
     )
 
@@ -393,32 +393,11 @@ async def check_premium_status(bot: Client, message: Message):
     
     if user_id == Config.ADMIN:
         await message.reply_text(
-            "👨‍💼 **Admin Status**\n\n"
-            "You have full admin privileges with unlimited access to all features.",
+            "**ᴀᴅᴍɪɴ sᴛᴀᴛᴜs**\n\n"
+            "ʏᴏᴜ ʜᴀᴠᴇ ғᴜʟʟ ᴀᴅᴍɪɴ ᴘʀɪᴠɪʟᴇɢᴇs ᴡɪᴛʜ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇss ᴛᴏ ᴀʟʟ ғᴇᴀᴛᴜʀᴇs.",
             quote=True
         )
         return
     
     premium_status = await db.get_premium_status(user_id)
-    chat_info = f" in {message.chat.title}" if message.chat.type in ['supergroup', 'group'] else ""
-    
-    if premium_status['is_premium']:
-        import datetime
-        expiry_time = datetime.datetime.fromtimestamp(premium_status['premium_expires'])
-        expiry_str = expiry_time.strftime("%Y-%m-%d %I:%M:%S %p")
-        
-        status_text = f"👑 **Premium Status{chat_info}**\n\n"
-        status_text += f"**Status:** Active Premium User\n"
-        status_text += f"**Expires:** {expiry_str}\n"
-        status_text += f"**Benefits:**\n"
-        status_text += f"• No verification required\n"
-        status_text += f"• Custom encoding settings\n"
-        status_text += f"• Group access to premium features\n"
-        status_text += f"• Priority support"
-    else:
-        status_text = f"👤 **Regular User Status{chat_info}**\n\n"
-        status_text += f"**Status:** Regular User\n"
-        status_text += f"**Access:** Basic features only\n"
-        status_text += f"**Upgrade:** Contact admin for premium access"
-    
-    await message.reply_text(status_text, quote=True)
+    chat_info = f" ɪɴ {message.chat.title}" if message.ch
